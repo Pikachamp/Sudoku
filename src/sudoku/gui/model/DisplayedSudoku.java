@@ -70,7 +70,33 @@ public class DisplayedSudoku extends Observable implements Cloneable {
                     + "number or a cell outside of the board. Watch out that "
                     + "the cells are indexed beginning with 0!");
         }
+        if (!changeable[row][col]) {
+            throw new IllegalArgumentException("Error! Tried to overwrite the "
+                    + "value of a cell given by the file!");
+        }
         board[row][col] = number;
+        setChanged();
+        notifyObservers(getBoard());
+    }
+
+    /**
+     * Unsets the specified cell.
+     *
+     * @param row The row of the cell.
+     * @param col The column of the cell.
+     */
+    public void unsetCell (int row, int col) {
+        if (row < 0 || col < 0 || row >= cellsPerStructure
+                || col >= cellsPerStructure) {
+            throw new IllegalArgumentException("Error! Tried to unset a cell "
+                    + "that is not on the board! Watch out that the cells are "
+                    + "indexed beginning with 0!");
+        }
+        if (!changeable[row][col]) {
+            throw new IllegalArgumentException("Error! Tried to overwrite the "
+                    + "value of a cell given by the file!");
+        }
+        board[row][col] = DisplayedSudoku.UNSET_CELL;
         setChanged();
         notifyObservers(getBoard());
     }
