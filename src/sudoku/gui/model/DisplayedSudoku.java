@@ -10,9 +10,9 @@ import java.util.Observable;
  * {@link sudoku.model.Board} and solve it.
  */
 public class DisplayedSudoku extends Observable implements Cloneable {
-    private int boxRows;
-    private int boxCols;
-    private int cellsPerStructure;
+    private final int boxRows;
+    private final int boxCols;
+    private final int cellsPerStructure;
     private int[][] board;
     private boolean[][] changeable;
 
@@ -36,9 +36,29 @@ public class DisplayedSudoku extends Observable implements Cloneable {
         int cellsPerStructure = boxRows * boxCols;
         this.boxRows = boxRows;
         this.boxCols = boxCols;
-        cellsPerStructure = boxRows * boxCols;
+        this.cellsPerStructure = boxRows * boxCols;
         this.board = new int[cellsPerStructure][cellsPerStructure];
         this.changeable = new boolean[cellsPerStructure][cellsPerStructure];
+    }
+
+    /**
+     * Creates a deep copy of {@code original}
+     *
+     * @param original The DisplayedSudoku to be cloned.
+     */
+    private DisplayedSudoku (DisplayedSudoku original) {
+        this.boxRows = original.boxRows;
+        this.boxCols = original.boxCols;
+        this.cellsPerStructure = original.cellsPerStructure;
+        this.board = new int[cellsPerStructure][cellsPerStructure];
+        for (int i = 0; i < cellsPerStructure; i++) {
+            this.board[i] = Arrays.copyOf(original.board[i], cellsPerStructure);
+        }
+        this.changeable = new boolean[cellsPerStructure][cellsPerStructure];
+        for (int i = 0; i < cellsPerStructure; i++) {
+            this.changeable[i] = Arrays.copyOf(original.changeable[i],
+                    cellsPerStructure);
+        }
     }
 
     /**
@@ -102,5 +122,14 @@ public class DisplayedSudoku extends Observable implements Cloneable {
         board[row][col] = DisplayedSudoku.UNSET_CELL;
         setChanged();
         notifyObservers(getBoard());
+    }
+
+    /**
+     * Returns a deep copy of {@code this}.
+     *
+     * @return a deep copy of {@code this}.
+     */
+    public DisplayedSudoku clone () {
+        return new DisplayedSudoku(this);
     }
 }
