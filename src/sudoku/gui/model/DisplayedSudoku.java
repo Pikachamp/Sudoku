@@ -56,13 +56,15 @@ public class DisplayedSudoku extends Observable implements Cloneable {
     }
 
     /**
-     * Sets the cell specified by its coordinates to the given value.
+     * Sets the cell specified by its coordinates to the given value. Specifies
+     * if the cell is going to be changeable or not.
      *
      * @param row The row of the cell.
      * @param col The column of the cell.
      * @param number The number to be set into the cell.
+     * @param isChangeable Specifies whether the cell will be changeable or not.
      */
-    public void setCell (int row, int col, int number) {
+    public void setCell (int row, int col, int number, boolean isChangeable) {
         if (row < 0 || col < 0 || row >= cellsPerStructure
                 || col >= cellsPerStructure || number < 1
                 || number > cellsPerStructure) {
@@ -75,6 +77,7 @@ public class DisplayedSudoku extends Observable implements Cloneable {
                     + "value of a cell given by the file!");
         }
         board[row][col] = number;
+        changeable[row][col] = isChangeable;
         setChanged();
         notifyObservers(getBoard());
     }
