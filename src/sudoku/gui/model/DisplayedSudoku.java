@@ -12,13 +12,14 @@ import java.util.Observable;
 public class DisplayedSudoku extends Observable implements Cloneable {
     private int boxRows;
     private int boxCols;
+    private int cellsPerStructure;
     private int[][] board;
     private boolean[][] changeable;
 
     /**
      * The constant to indicate that a cell is not yet set.
      */
-    public final int UNSET_CELL = Board.UNSET_CELL;
+    public static final int UNSET_CELL = Board.UNSET_CELL;
 
     /**
      * Creates a new Sudoku board that has {@code boxRows * boxCols} rows and
@@ -35,6 +36,7 @@ public class DisplayedSudoku extends Observable implements Cloneable {
         int cellsPerStructure = boxRows * boxCols;
         this.boxRows = boxRows;
         this.boxCols = boxCols;
+        cellsPerStructure = boxRows * boxCols;
         this.board = new int[cellsPerStructure][cellsPerStructure];
         this.changeable = new boolean[cellsPerStructure][cellsPerStructure];
     }
@@ -46,10 +48,30 @@ public class DisplayedSudoku extends Observable implements Cloneable {
      * @return The content of the Sudoku cells.
      */
     public int[][] getBoard () {
-        int [][] boardClone = new int[boxRows * boxCols][boxRows * boxCols];
+        int [][] boardClone = new int[cellsPerStructure][cellsPerStructure];
         for (int i = 0; i < board.length; i++) {
             boardClone[i] = Arrays.copyOf(board[i], board[i].length);
         }
         return boardClone;
+    }
+
+    /**
+     * Sets the cell specified by its coordinates to the given value.
+     *
+     * @param row The row of the cell.
+     * @param col The column of the cell.
+     * @param number The number to be set into the cell.
+     */
+    public void setCell (int row, int col, int number) {
+        if (row < 0 || col < 0 || row >= cellsPerStructure
+                || col >= cellsPerStructure || number < 1
+                || number > cellsPerStructure) {
+            throw new IllegalArgumentException("Error! Tried to set an invalid "
+                    + "number or a cell outside of the board. Watch out that "
+                    + "the cells are indexed beginning with 0!");
+        }
+        board[row][col] = number;
+        setChanged();
+        notifyObservers(getBoard());
     }
 }
