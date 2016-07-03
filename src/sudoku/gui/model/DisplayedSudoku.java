@@ -1,6 +1,9 @@
 package sudoku.gui.model;
 
 import sudoku.model.Board;
+import sudoku.model.InvalidSudokuException;
+import sudoku.model.Structure;
+import sudoku.model.SudokuBoard;
 
 import java.util.Arrays;
 import java.util.Observable;
@@ -125,10 +128,30 @@ public class DisplayedSudoku extends Observable implements Cloneable {
     }
 
     /**
+     * Converts this into a Board and returns the result or throws an exception
+     * if the current Sudoku is invalid.
+     *
+     * @return a Board containing the values saved by {@code this}
+     * @throws InvalidSudokuException If the Sudoku represented is invalid.
+     */
+    public Board getSudoku () throws InvalidSudokuException {
+        Board sudoku = new SudokuBoard(boxRows, boxCols);
+        for (int i = 0; i < cellsPerStructure; i++) {
+            for (int j = 0; j < cellsPerStructure; j++) {
+                if (board[i][j] != Board.UNSET_CELL) {
+                    sudoku.setCell(Structure.ROW, i, j, board[i][j]);
+                }
+            }
+        }
+        return sudoku;
+    }
+
+    /**
      * Returns a deep copy of {@code this}.
      *
      * @return a deep copy of {@code this}.
      */
+    @Override
     public DisplayedSudoku clone () {
         return new DisplayedSudoku(this);
     }
