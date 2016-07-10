@@ -65,6 +65,15 @@ public class DisplayedSudoku extends Observable implements Cloneable {
     }
 
     /**
+     * Returns the number of cells per structure of this Sudoku.
+     *
+     * @return the number of cells per structure of this Sudoku.
+     */
+    public int getNumbers () {
+        return cellsPerStructure;
+    }
+
+    /**
      * Returns a two-dimensional Array containing the number that is set in the
      * cell of this position or {@link #UNSET_CELL} if the cell is not set.
      *
