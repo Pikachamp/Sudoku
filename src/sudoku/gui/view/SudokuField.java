@@ -23,10 +23,7 @@ public class SudokuField extends JPanel {
         }
     }
 
-    public void openFile () throws IOException {
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.showOpenDialog(this);
-        File file = fileChooser.getSelectedFile();
+    public void openFile (File file) throws IOException {
         try {
             sudoku = DisplayedSudokuFactory.loadFromFile(file);
         }  catch (ParseException e) {
