@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.Observable;
 import java.util.Observer;
 
 public class SudokuFrame extends JFrame implements Observer {
@@ -12,6 +13,11 @@ public class SudokuFrame extends JFrame implements Observer {
     private SudokuField field;
 
     public SudokuFrame () {
+        super("Sudoku");
+        setSize(300, 300);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setResizable(true);
+        setVisible(true);
         menuBar = new JMenuBar();
         JMenu menu = new JMenu("File");
         menu.setMnemonic(KeyEvent.VK_F);
@@ -21,17 +27,9 @@ public class SudokuFrame extends JFrame implements Observer {
         entry.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,
                 ActionEvent.CTRL_MASK));
         entry.setToolTipText("Opens a Sudoku from a file.");
-        entry.addActionListener(e -> {
-            SudokuField field = ((SudokuFrame) ((Container) e.getSource())
-                    .getParent().getParent().getParent()).field;
-            try {
-                field.openFile();
-            } catch (IOException f) {
-                //TODO
-            }
-        });
+        entry.addActionListener();
         menu.add(entry);
-        /*entry = new JMenu("Exit");
+        entry = new JMenuItem("Exit");
         entry.setMnemonic(KeyEvent.VK_X);
         entry.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X,
                 ActionEvent.CTRL_MASK));
@@ -68,13 +66,16 @@ public class SudokuFrame extends JFrame implements Observer {
         entry.setToolTipText("Solve the Sudoku.");
         entry.addActionListener();
         menu.add(entry);
-        menuBar.add(menu);*/
-        this.setJMenuBar(menuBar);
+        menuBar.add(menu);
+        add(menuBar);
+        setJMenuBar(menuBar);
+    }
+
+    public void update (Observable obv, Object args) {
+        this.pack();
     }
 
     public static void main (String[] args) {
-        SudokuFrame frame = new SudokuFrame();
-        frame.pack();
-        frame.setVisible(true);
+        new SudokuFrame();
     }
 }
