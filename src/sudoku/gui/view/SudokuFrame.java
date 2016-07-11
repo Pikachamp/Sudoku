@@ -1,8 +1,10 @@
 package sudoku.gui.view;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.io.IOException;
 import java.util.Observer;
 
 public class SudokuFrame extends JFrame implements Observer {
@@ -19,9 +21,17 @@ public class SudokuFrame extends JFrame implements Observer {
         entry.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,
                 ActionEvent.CTRL_MASK));
         entry.setToolTipText("Opens a Sudoku from a file.");
-        entry.addActionListener();
+        entry.addActionListener(e -> {
+            SudokuField field = ((SudokuFrame) ((Container) e.getSource())
+                    .getParent().getParent().getParent()).field;
+            try {
+                field.openFile();
+            } catch (IOException f) {
+                //TODO
+            }
+        });
         menu.add(entry);
-        entry = new JMenu("Exit");
+        /*entry = new JMenu("Exit");
         entry.setMnemonic(KeyEvent.VK_X);
         entry.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X,
                 ActionEvent.CTRL_MASK));
@@ -58,11 +68,13 @@ public class SudokuFrame extends JFrame implements Observer {
         entry.setToolTipText("Solve the Sudoku.");
         entry.addActionListener();
         menu.add(entry);
-        menuBar.add(menu);
+        menuBar.add(menu);*/
         this.setJMenuBar(menuBar);
     }
 
     public static void main (String[] args) {
-
+        SudokuFrame frame = new SudokuFrame();
+        frame.pack();
+        frame.setVisible(true);
     }
 }
