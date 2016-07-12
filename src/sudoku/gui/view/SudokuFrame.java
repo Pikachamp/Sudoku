@@ -1,26 +1,18 @@
 package sudoku.gui.view;
 
-import sudoku.gui.DisplayedSudokuFactory;
+import sudoku.gui.SudokuFieldFactory;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.Observable;
-import java.util.Observer;
 
-public class SudokuFrame extends JFrame implements Observer {
+public class SudokuFrame extends JFrame {
     private JMenuBar menuBar;
     private SudokuField field;
 
     public SudokuFrame () {
         super("Sudoku");
-        setSize(300, 300);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setResizable(true);
-        setVisible(true);
         menuBar = new JMenuBar();
         JMenu menu = new JMenu("File");
         menu.setMnemonic(KeyEvent.VK_F);
@@ -35,8 +27,13 @@ public class SudokuFrame extends JFrame implements Observer {
             int result = fileChooser.showOpenDialog(this);
             if (result == JFileChooser.APPROVE_OPTION) {
                 try {
-                    field.openFile(fileChooser.getSelectedFile());
+                    field = SudokuFieldFactory.loadFromFile(fileChooser
+                            .getSelectedFile());
+                    this.getContentPane().add(field);
+                    this.pack();
                 } catch (IOException f) {
+
+                } catch (ParseException f) {
 
                 }
             }
@@ -57,7 +54,7 @@ public class SudokuFrame extends JFrame implements Observer {
         menu.setMnemonic(KeyEvent.VK_E);
         menu.setToolTipText("Undo the latest actions.");
         entry = new JMenuItem("Undo");
-        entry.setMnemonic(KeyEvent.VK_U);
+         entry.setMnemonic(KeyEvent.VK_U);
         entry.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z,
                 ActionEvent.CTRL_MASK));
         entry.setToolTipText("Undo the latest change.");
@@ -85,10 +82,10 @@ public class SudokuFrame extends JFrame implements Observer {
         menuBar.add(menu);
         add(menuBar);
         setJMenuBar(menuBar);
-    }
-
-    public void update (Observable obv, Object args) {
-        this.pack();
+        setSize(300, 300);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setResizable(true);
+        setVisible(true);
     }
 
     public static void main (String[] args) {

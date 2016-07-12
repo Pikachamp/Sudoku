@@ -1,6 +1,7 @@
 package sudoku.gui;
 
 import sudoku.gui.model.DisplayedSudoku;
+import sudoku.gui.view.SudokuField;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -13,7 +14,7 @@ import java.util.Scanner;
 /**
  * This class can be used to read a Sudoku from a given file.
  */
-public final class DisplayedSudokuFactory {
+public final class SudokuFieldFactory {
 
     /**
      * Combines a text line of the file with its line number.
@@ -28,7 +29,7 @@ public final class DisplayedSudokuFactory {
     /**
      * Utility class constructor preventing instantiation.
      */
-    private DisplayedSudokuFactory() {
+    private SudokuFieldFactory() {
         throw new UnsupportedOperationException(
                 "Illegal call of utility class constructor.");
     }
@@ -42,13 +43,14 @@ public final class DisplayedSudokuFactory {
      * @throws IOException If an IO error occurs.
      * @throws ParseException If the file is not using the expected format.
      */
-    public static DisplayedSudoku loadFromFile(File file)
+    public static SudokuField loadFromFile(File file)
             throws FileNotFoundException, IOException, ParseException {
         if (file == null || !file.exists() || !file.canRead()) {
             throw new IllegalArgumentException("Error! The given file is "
                     + "either null, does not exist anymore or the program lacks"
                     + "the permission to read it!");
         }
+        SudokuField field;
         DisplayedSudoku sudoku;
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             Line line = readLine(reader, 0);
@@ -69,8 +71,9 @@ public final class DisplayedSudokuFactory {
                 parseRow(line.text, sudoku, currentRow, line.number);
                 line = readLine(reader, line.number);
             }
+            field = new SudokuField(rowsPerBox, columnsPerBox, sudoku);
         }
-        return sudoku;
+        return field;
     }
 
     /**
@@ -178,7 +181,7 @@ public final class DisplayedSudokuFactory {
                                                          int lineNumber)
             throws ParseException {
         Scanner scanner = new Scanner(arg);
-        scanner.useDelimiter(DisplayedSudokuFactory.DELIMITER);
+        scanner.useDelimiter(SudokuFieldFactory.DELIMITER);
         int[] result = new int[2];
         if (scanner.hasNextInt()) {
             result[0] = scanner.nextInt();

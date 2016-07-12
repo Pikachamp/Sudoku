@@ -42,6 +42,11 @@ public class DisplayedSudoku extends Observable implements Cloneable {
         this.cellsPerStructure = boxRows * boxCols;
         this.board = new int[cellsPerStructure][cellsPerStructure];
         this.changeable = new boolean[cellsPerStructure][cellsPerStructure];
+        for (int i = 0; i < cellsPerStructure; i++) {
+            for (int j = 0; j < cellsPerStructure; j++) {
+                changeable[i][j] = true;
+            }
+        }
     }
 
     /**
@@ -163,5 +168,10 @@ public class DisplayedSudoku extends Observable implements Cloneable {
     @Override
     public DisplayedSudoku clone () {
         return new DisplayedSudoku(this);
+    }
+
+    public String getContent(int row, int col) {
+        return board[row][col] == DisplayedSudoku.UNSET_CELL ? ""
+                : Integer.toString(board[row][col]);
     }
 }
