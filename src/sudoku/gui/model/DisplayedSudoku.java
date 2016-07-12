@@ -44,6 +44,7 @@ public class DisplayedSudoku extends Observable implements Cloneable {
         this.changeable = new boolean[cellsPerStructure][cellsPerStructure];
         for (int i = 0; i < cellsPerStructure; i++) {
             for (int j = 0; j < cellsPerStructure; j++) {
+                board[i][j] = DisplayedSudoku.UNSET_CELL;
                 changeable[i][j] = true;
             }
         }

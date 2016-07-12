@@ -16,6 +16,7 @@ public class SudokuBoxPanel extends JPanel {
             JLabel label = new JLabel();
             this.add(label);
             cells[i] = label;
+            label.setMinimumSize(new Dimension(15, 15));
         }
         this.setLayout(new GridLayout(rows, cols));
         this.setVisible(true);

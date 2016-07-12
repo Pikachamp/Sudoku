@@ -1,21 +1,18 @@
 package sudoku.gui.view;
 
-import sudoku.gui.SudokuFieldFactory;
 import sudoku.gui.model.DisplayedSudoku;
 
 import javax.swing.*;
+import javax.swing.undo.UndoManager;
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import java.text.ParseException;
 import java.util.Observable;
 import java.util.Observer;
 
 public class SudokuField extends JPanel implements Observer {
     private int boxRows = 0;
     private int boxCols = 0;
-    private DisplayedSudoku sudoku;
     private SudokuBoxPanel[] boxes;
+    UndoManager undoManager;
 
     public SudokuField (int boxRows, int boxCols, DisplayedSudoku sudoku) {
         if (boxRows <= 0 || boxCols <= 0) {
@@ -31,17 +28,18 @@ public class SudokuField extends JPanel implements Observer {
             this.add(box);
             boxes[i] = box;
         }
-        this.sudoku = sudoku;
         sudoku.addObserver(this);
+        this.update(sudoku, null);
         this.setVisible(true);
+        undoManager = new UndoManager();
     }
 
     @Override
     public void update(Observable o, Object arg) {
         for (int i = 0; i < boxRows * boxCols; i++) {
             for (int j = 0; j < boxRows * boxCols; j++) {
-                boxes[i].setLabel(j, sudoku.getContent(this.getRow(i, j),
-                        this.getColumn(i, j)));
+                boxes[i].setLabel(j, ((DisplayedSudoku) o).getContent(
+                        this.getRow(i, j), this.getColumn(i, j)));
             }
         }
     }
