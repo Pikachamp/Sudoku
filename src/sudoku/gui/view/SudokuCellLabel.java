@@ -3,6 +3,8 @@ package sudoku.gui.view;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class SudokuCellLabel extends JLabel {
     int row;
@@ -16,6 +18,21 @@ public class SudokuCellLabel extends JLabel {
         this.col = col;
         popupMenu = new SudokuPopupMenu(maxNumber);
         this.add(popupMenu);
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+        });
     }
 
     public void set (String value, boolean changeable) {
@@ -38,14 +55,10 @@ class SudokuPopupMenu extends JPopupMenu {
         for (int i = 0; i < maxNumber; i++) {
             final int finalI = i;
             addJMenuItem(Integer.toString(i), "Sets this cell to " + i + ".",
-                    e -> ((SudokuFrame) getTopLevelAncestor()).setCell(
-                            ((SudokuCellLabel) getParent()).row,
-                            ((SudokuCellLabel) getParent()).col, finalI));
-            addJMenuItem("Remove", "Clears the cell.",
-                    e -> ((SudokuFrame) getTopLevelAncestor()).unsetCell(
-                            ((SudokuCellLabel) getParent()).row,
-                            ((SudokuCellLabel) getParent()).col));
+                    e -> ((SudokuFrame) getTopLevelAncestor()).setCell(0, 0, finalI));
         }
+        addJMenuItem("Remove", "Clears the cell.",
+                e -> ((SudokuFrame) getTopLevelAncestor()).unsetCell(0, 0));
     }
 
     private void addJMenuItem (String text, String tooltip,
@@ -53,6 +66,6 @@ class SudokuPopupMenu extends JPopupMenu {
         JMenuItem entry = new JMenuItem(text);
         entry.setToolTipText(tooltip);
         entry.addActionListener(listener);
-        add(entry);
+        this.add(entry);
     }
 }

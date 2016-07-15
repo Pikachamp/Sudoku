@@ -17,7 +17,7 @@ public class SudokuBoxPanel extends JPanel {
                 SudokuCellLabel label = new SudokuCellLabel(firstRow + i,
                         firstCol + j, rows * cols);
                 this.add(label);
-                cells[i] = label;
+                cells[i * rows + j] = label;
             }
         }
         this.setLayout(new GridLayout(rows, cols));
@@ -25,7 +25,7 @@ public class SudokuBoxPanel extends JPanel {
     }
 
     public void setLabel (int position, String value, boolean changeable) {
-        if (cells == null || position >= cells.length) {
+        if (cells == null || position < 0 || position >= cells.length) {
             throw new IllegalArgumentException("Error! The label tried to set "
             + "does not exist!");
         }
