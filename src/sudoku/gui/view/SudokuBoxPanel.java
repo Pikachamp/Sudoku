@@ -13,11 +13,11 @@ public class SudokuBoxPanel extends JPanel {
         }
         cells = new SudokuCellLabel[rows * cols];
         for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j ++) {
+            for (int j = 0; j < cols; j++) {
                 SudokuCellLabel label = new SudokuCellLabel(firstRow + i,
                         firstCol + j, rows * cols);
                 this.add(label);
-                cells[i * rows + j] = label;
+                cells[i * cols + j] = label;
             }
         }
         this.setLayout(new GridLayout(rows, cols));

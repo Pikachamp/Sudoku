@@ -60,13 +60,13 @@ public class SudokuField extends JPanel implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        for (int i = 0; i < boxRows * boxCols; i++) {
-            for (int j = 0; j < boxRows * boxCols; j++) {
+        DisplayedSudoku sud = (DisplayedSudoku) o;
+        for (int i = 0; i < sud.getNumbers(); i++) {
+            for (int j = 0; j < sud.getNumbers(); j++) {
                 int boxNumber = this.getBoxNumber(i, j);
                 int positionInBox = this.getPositionInBox(i, j);
-                boxes[boxNumber].setLabel(positionInBox,
-                        ((DisplayedSudoku) o).getContent(i, j),
-                        ((DisplayedSudoku) o).isChangeable(i, j));
+                boxes[boxNumber].setLabel(positionInBox, sud.getContent(i, j),
+                        sud.isChangeable(i, j));
             }
         }
     }
