@@ -13,10 +13,10 @@ public class SudokuCellLabel extends JLabel {
 
     public SudokuCellLabel(int row, int col, int maxNumber) {
         super();
-        setMinimumSize(new Dimension(25, 25));
+        setMinimumSize(new Dimension(40, 40));
         this.row = row;
         this.col = col;
-        popupMenu = new SudokuPopupMenu(maxNumber);
+        popupMenu = new SudokuPopupMenu(maxNumber, this);
         this.add(popupMenu);
         this.addMouseListener(new MouseAdapter() {
             @Override
@@ -49,16 +49,21 @@ public class SudokuCellLabel extends JLabel {
 }
 
 class SudokuPopupMenu extends JPopupMenu {
+    private SudokuCellLabel cell;
 
-    public SudokuPopupMenu(int maxNumber) {
+    public SudokuPopupMenu(int maxNumber, SudokuCellLabel cell) {
         super();
-        for (int i = 0; i < maxNumber; i++) {
+        this.cell = cell;
+        for (int i = 1; i < maxNumber; i++) {
             final int finalI = i;
             addJMenuItem(Integer.toString(i), "Sets this cell to " + i + ".",
-                    e -> ((SudokuFrame) getTopLevelAncestor()).setCell(0, 0, finalI));
+                    e -> ((SudokuFrame) this.cell.getTopLevelAncestor())
+                            .setCell(this.cell.row, this.cell.col, finalI));
         }
         addJMenuItem("Remove", "Clears the cell.",
-                e -> ((SudokuFrame) getTopLevelAncestor()).unsetCell(0, 0));
+                e -> ((SudokuFrame) this.cell.getTopLevelAncestor()).unsetCell(
+                        this.cell.row, this.cell.col));
+        this.setEnabled(true);
     }
 
     private void addJMenuItem (String text, String tooltip,
