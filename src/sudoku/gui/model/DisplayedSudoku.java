@@ -56,6 +56,7 @@ public class DisplayedSudoku extends Observable implements Cloneable {
      * @param original The DisplayedSudoku to be cloned.
      */
     private DisplayedSudoku (DisplayedSudoku original) {
+        assert original != null;
         this.boxRows = original.boxRows;
         this.boxCols = original.boxCols;
         this.cellsPerStructure = original.cellsPerStructure;
@@ -91,6 +92,23 @@ public class DisplayedSudoku extends Observable implements Cloneable {
             boardClone[i] = Arrays.copyOf(board[i], board[i].length);
         }
         return boardClone;
+    }
+
+    /**
+     * Returns whether the cell specified by {@code row} and {@code col} is
+     * changeable or not.
+     *
+     * @param row The row of the cell.
+     * @param col The column of the cell.
+     * @return whether the cell may be changed or not.
+     */
+    public boolean isChangeable(int row, int col) {
+        if (row < 0 || col < 0 || row >= cellsPerStructure
+                || col >= cellsPerStructure) {
+            throw new IllegalArgumentException("Error! Tried to acces a cell "
+                    + "that does not exist!");
+        }
+        return changeable[row][col];
     }
 
     /**

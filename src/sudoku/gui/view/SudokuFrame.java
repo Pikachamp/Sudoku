@@ -4,6 +4,7 @@ import sudoku.gui.SudokuFieldFactory;
 
 import javax.swing.*;
 import java.awt.event.*;
+import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 
@@ -27,14 +28,24 @@ public class SudokuFrame extends JFrame {
             int result = fileChooser.showOpenDialog(this);
             if (result == JFileChooser.APPROVE_OPTION) {
                 try {
-                    field = SudokuFieldFactory.loadFromFile(fileChooser
-                            .getSelectedFile());
-                    this.getContentPane().add(field);
-                    this.pack();
+                    File file = fileChooser.getSelectedFile();
+                    if (file != null && file.exists() && file.isFile() &&
+                            file.canRead()) {
+                        field = SudokuFieldFactory.loadFromFile(file);
+                        this.getContentPane().add(field);
+                        this.pack();
+                    }
+                    else {
+                        this.showErrorPopup("An error occured when trying to"
+                                + "open the chosen file! Check its status and"
+                                + "your permissions to read it!", "Error!");
+                    }
                 } catch (IOException f) {
-
+                    this.showErrorPopup("An error occured when trying to open "
+                            + "and read the file!", "I/O-Error!");
                 } catch (ParseException f) {
-
+                    this.showErrorPopup("The chosen file is not formatted "
+                            + "properly!", "Error!");
                 }
             }
         });
@@ -44,17 +55,14 @@ public class SudokuFrame extends JFrame {
         entry.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X,
                 ActionEvent.CTRL_MASK));
         entry.setToolTipText("Ends the program and closes the window.");
-        entry.addActionListener(e -> {
-            this.dispose();
-            }
-        );
+        entry.addActionListener(e -> this.dispose());
         menu.add(entry);
         menuBar.add(menu);
         menu = new JMenu("Edit");
         menu.setMnemonic(KeyEvent.VK_E);
         menu.setToolTipText("Undo the latest actions.");
         entry = new JMenuItem("Undo");
-         entry.setMnemonic(KeyEvent.VK_U);
+        entry.setMnemonic(KeyEvent.VK_U);
         entry.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z,
                 ActionEvent.CTRL_MASK));
         entry.setToolTipText("Undo the latest change.");
@@ -86,6 +94,19 @@ public class SudokuFrame extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(true);
         setVisible(true);
+    }
+
+    public void setCell (int row, int col, int value) {
+        field.setCell(row, col, value);
+    }
+
+    public void unsetCell (int row, int col) {
+        field.unsetCell(row, col);
+    }
+
+    private void showErrorPopup (String message, String title) {
+        JOptionPane.showMessageDialog(this, message, title,
+                JOptionPane.ERROR_MESSAGE);
     }
 
     public static void main (String[] args) {
