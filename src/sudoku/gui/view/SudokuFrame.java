@@ -1,6 +1,8 @@
 package sudoku.gui.view;
 
 import sudoku.gui.SudokuFieldFactory;
+import sudoku.model.InvalidSudokuException;
+import sudoku.model.UnsolvableSudokuException;
 
 import javax.swing.*;
 import java.awt.event.*;
@@ -78,14 +80,34 @@ public class SudokuFrame extends JFrame {
                 ActionEvent.CTRL_MASK));
         entry.setToolTipText("Fill a cell with a value retrieved from a"
                 + "possible solution.");
-        entry.addActionListener(e -> {});
+        entry.addActionListener(e -> {
+            try {
+                field.suggestValue();
+            } catch (InvalidSudokuException f) {
+                showErrorPopup("The current Sudoku is no valid Sudoku!",
+                        "Error");
+            } catch (UnsolvableSudokuException f) {
+                showErrorPopup("The current Sudoku is not solvable!",
+                        "Unsolvable Sudoku");
+            }
+        });
         menu.add(entry);
         entry = new JMenuItem("Solve");
         entry.setMnemonic(KeyEvent.VK_S);
         entry.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A,
                 ActionEvent.CTRL_MASK));
         entry.setToolTipText("Solve the Sudoku.");
-        entry.addActionListener(e -> {});
+        entry.addActionListener(e -> {
+            try {
+                field.solveSudoku();
+            } catch (InvalidSudokuException f) {
+                showErrorPopup("The current Sudoku is no valid Sudoku!",
+                        "Error");
+            } catch (UnsolvableSudokuException f) {
+                showErrorPopup("The current Sudoku is not solvable!",
+                        "Unsolvable Sudoku");
+            }
+        });
         menu.add(entry);
         menuBar.add(menu);
         add(menuBar);

@@ -1,6 +1,7 @@
 package sudoku.gui.view;
 
 import sudoku.gui.model.DisplayedSudoku;
+import sudoku.model.*;
 
 import javax.swing.*;
 import javax.swing.undo.UndoManager;
@@ -37,7 +38,7 @@ public class SudokuField extends JPanel implements Observer {
         undoManager = new UndoManager();
     }
 
-    public void setCell (int row, int col, int value) {
+    public synchronized void setCell (int row, int col, int value) {
         if (row < 0 || col < 0 || value < 1 || sudoku == null
                 || row >= sudoku.getNumbers() || col >= sudoku.getNumbers()
                 || value > sudoku.getNumbers()) {
@@ -46,9 +47,17 @@ public class SudokuField extends JPanel implements Observer {
                     + "or a cell of a not yet initialized sudoku!");
         }
         sudoku.setCell(row, col, value, true);
+        try {
+            Board board = sudoku.getSudoku();
+            if (board.isSolution()) {
+                JOptionPane.showMessageDialog(getParent(),
+                        "You have solved the Sudoku!", "Congratulations",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (InvalidSudokuException e) { }
     }
 
-    public void unsetCell (int row, int col) {
+    public synchronized void unsetCell (int row, int col) {
         if (row < 0 || col < 0 || sudoku == null || row >= sudoku.getNumbers()
                 || col >= sudoku.getNumbers()) {
             throw new IllegalArgumentException("Error! Tried to unset a cell "
@@ -56,6 +65,37 @@ public class SudokuField extends JPanel implements Observer {
                     + "initialized sudoku!");
         }
         sudoku.unsetCell(row, col);
+    }
+
+    public void suggestValue() throws InvalidSudokuException,
+            UnsolvableSudokuException {
+        Board board = sudoku.getSudoku();
+        SudokuSolver solver = new SudokuBoardSolver();
+        solver.addSaturator(new EnforcedCellSaturator());
+        solver.addSaturator(new EnforcedNumberSaturator());
+        board = solver.findFirstSolution(board);
+        int[] lastSetCoordinates = board.getLastCellSet();
+        int lastSetValue = board.getCell(Structure.ROW, lastSetCoordinates[0],
+                lastSetCoordinates[1]);
+        sudoku.setCell(lastSetCoordinates[0], lastSetCoordinates[1],
+                lastSetValue, true);
+    }
+
+    public void solveSudoku() throws InvalidSudokuException,
+            UnsolvableSudokuException {
+        Board board = sudoku.getSudoku();
+        SudokuSolver solver = new SudokuBoardSolver();
+        solver.addSaturator(new EnforcedCellSaturator());
+        solver.addSaturator(new EnforcedNumberSaturator());
+        board = solver.findFirstSolution(board);
+        for (int i = 0; i < board.getNumbers(); i++) {
+            for (int j = 0; j < board.getNumbers(); j++) {
+                if (sudoku.isChangeable(i, j)) {
+                    sudoku.setCell(i, j, board.getCell(Structure.ROW, i, j),
+                            true);
+                }
+            }
+        }
     }
 
     @Override
