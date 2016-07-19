@@ -72,7 +72,10 @@ public class SudokuFrame extends JFrame {
         entry.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z,
                 ActionEvent.CTRL_MASK));
         entry.setToolTipText("Undo the latest change.");
-        entry.addActionListener(e -> undoManager.undo());
+        entry.addActionListener(e -> {
+            undoManager.undo();
+            this.updateUndoButton();
+        });
         undoMenuEntry = entry;
         menu.add(entry);
         menuBar.add(menu);
@@ -87,7 +90,8 @@ public class SudokuFrame extends JFrame {
                 + "possible solution.");
         entry.addActionListener(e -> {
             try {
-                field.suggestValue();
+                field.suggestValue(undoManager);
+                updateUndoButton();
             } catch (InvalidSudokuException f) {
                 showErrorPopup("The current Sudoku is no valid Sudoku!",
                         "Error");
@@ -104,7 +108,8 @@ public class SudokuFrame extends JFrame {
         entry.setToolTipText("Solve the Sudoku.");
         entry.addActionListener(e -> {
             try {
-                field.solveSudoku();
+                field.solveSudoku(undoManager);
+                updateUndoButton();
             } catch (InvalidSudokuException f) {
                 showErrorPopup("The current Sudoku is no valid Sudoku!",
                         "Error");
@@ -125,7 +130,7 @@ public class SudokuFrame extends JFrame {
     }
 
     public void setCell (int row, int col, int value) {
-        field.setCell(row, col, value, undoManager);
+        field.setCell(row, col, value, undoManager, true);
         updateUndoButton();
     }
 
@@ -140,7 +145,7 @@ public class SudokuFrame extends JFrame {
     }
 
     private void updateUndoButton() {
-        if (undoManager.canUndoOrRedo()) {
+        if (undoManager.canUndo()) {
             undoMenuEntry.setEnabled(true);
         } else {
             undoMenuEntry.setEnabled(false);

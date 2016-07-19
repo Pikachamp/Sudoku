@@ -39,7 +39,8 @@ public class SudokuField extends JPanel implements Observer {
     }
 
     public synchronized void setCell (int row, int col, int value,
-                                      UndoManager undoManager) {
+                                      UndoManager undoManager,
+                                      boolean changedByUser) {
         if (row < 0 || col < 0 || value < 1 || sudoku == null
                 || row >= sudoku.getNumbers() || col >= sudoku.getNumbers()
                 || value > sudoku.getNumbers()) {
@@ -47,16 +48,19 @@ public class SudokuField extends JPanel implements Observer {
                     + "that is not on the sudoku, a value that may not be set "
                     + "or a cell of a not yet initialized sudoku!");
         }
-        sudoku.setCell(row, col, value, true);
         undoManager.addEdit(new UndoableCellChange(sudoku, row, col));
-        try {
-            Board board = sudoku.getSudoku();
-            if (board.isSolution()) {
-                JOptionPane.showMessageDialog(getParent(),
-                        "You have solved the Sudoku!", "Congratulations",
-                        JOptionPane.INFORMATION_MESSAGE);
+        sudoku.setCell(row, col, value, true);
+        if (changedByUser) {
+            try {
+                Board board = sudoku.getSudoku();
+                if (board.isSolution()) {
+                    JOptionPane.showMessageDialog(getParent(),
+                            "You have solved the Sudoku!", "Congratulations",
+                            JOptionPane.INFORMATION_MESSAGE);
+                }
+            } catch (InvalidSudokuException e) {
             }
-        } catch (InvalidSudokuException e) { }
+        }
     }
 
     public synchronized void unsetCell (int row, int col,
@@ -67,12 +71,12 @@ public class SudokuField extends JPanel implements Observer {
                     + "that is not on the sudoku or a cell of a not yet "
                     + "initialized sudoku!");
         }
-        sudoku.unsetCell(row, col);
         undoManager.addEdit(new UndoableCellChange(sudoku, row, col));
+        sudoku.unsetCell(row, col);
     }
 
-    public void suggestValue() throws InvalidSudokuException,
-            UnsolvableSudokuException {
+    public void suggestValue(UndoManager undoManager)
+            throws InvalidSudokuException, UnsolvableSudokuException {
         Board board = sudoku.getSudoku();
         SudokuSolver solver = new SudokuBoardSolver();
         solver.addSaturator(new EnforcedCellSaturator());
@@ -81,12 +85,12 @@ public class SudokuField extends JPanel implements Observer {
         int[] lastSetCoordinates = board.getLastCellSet();
         int lastSetValue = board.getCell(Structure.ROW, lastSetCoordinates[0],
                 lastSetCoordinates[1]);
-        sudoku.setCell(lastSetCoordinates[0], lastSetCoordinates[1],
-                lastSetValue, true);
+        setCell(lastSetCoordinates[0], lastSetCoordinates[1],
+                lastSetValue, undoManager, false);
     }
 
-    public void solveSudoku() throws InvalidSudokuException,
-            UnsolvableSudokuException {
+    public void solveSudoku(UndoManager undoManager)
+            throws InvalidSudokuException, UnsolvableSudokuException {
         Board board = sudoku.getSudoku();
         SudokuSolver solver = new SudokuBoardSolver();
         solver.addSaturator(new EnforcedCellSaturator());
@@ -95,8 +99,8 @@ public class SudokuField extends JPanel implements Observer {
         for (int i = 0; i < board.getNumbers(); i++) {
             for (int j = 0; j < board.getNumbers(); j++) {
                 if (sudoku.isChangeable(i, j)) {
-                    sudoku.setCell(i, j, board.getCell(Structure.ROW, i, j),
-                            true);
+                    setCell(i, j, board.getCell(Structure.ROW, i, j),
+                            undoManager, false);
                 }
             }
         }
