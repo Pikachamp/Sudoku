@@ -1,5 +1,6 @@
 package sudoku.gui.view;
 
+import sudoku.gui.model.DisplayData;
 import sudoku.gui.model.DisplayedSudoku;
 import sudoku.model.*;
 
@@ -15,7 +16,7 @@ public class SudokuField extends JPanel implements Observer {
     private int boxRows = 0;
     private int boxCols = 0;
     private SudokuBoxPanel[] boxes;
-    private final DisplayedSudoku sudoku;
+    private final DisplayData sudoku;
 
     public SudokuField (int boxRows, int boxCols, DisplayedSudoku sudoku) {
         if (boxRows <= 0 || boxCols <= 0) {
@@ -132,9 +133,9 @@ class UndoableCellChange extends AbstractUndoableEdit {
     private int oldValue;
     private int row;
     private int column;
-    private DisplayedSudoku sudoku;
+    private DisplayData sudoku;
 
-    public UndoableCellChange (DisplayedSudoku sudoku, int row, int column) {
+    public UndoableCellChange (DisplayData sudoku, int row, int column) {
         super();
         this.sudoku = sudoku;
         this.row = row;
@@ -155,13 +156,5 @@ class UndoableCellChange extends AbstractUndoableEdit {
             sudoku.setCell(row, column, oldValue, true);
         }
         super.undo();
-    }
-
-    @Override
-    public boolean canUndo() {
-        if (sudoku == null) {
-            return false;
-        }
-        return super.canUndo();
     }
 }

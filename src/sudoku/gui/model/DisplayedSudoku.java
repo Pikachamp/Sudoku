@@ -5,24 +5,22 @@ import sudoku.model.InvalidSudokuException;
 import sudoku.model.Structure;
 import sudoku.model.SudokuBoard;
 
-import java.util.Arrays;
 import java.util.Observable;
 
 /**
  * The data that is displayed by the GUI with the option to convert it into a
  * {@link sudoku.model.Board} and solve it.
  */
-public class DisplayedSudoku extends Observable implements Cloneable {
+public class DisplayedSudoku extends Observable implements DisplayData {
+    /**
+     * {@inheritDoc}
+     */
+    public static final int UNSET_CELL = DisplayData.UNSET_CELL;
     private final int boxRows;
     private final int boxCols;
     private final int cellsPerStructure;
     private int[][] board;
     private boolean[][] changeable;
-
-    /**
-     * The constant to indicate that a cell is not yet set.
-     */
-    public static final int UNSET_CELL = Board.UNSET_CELL;
 
     /**
      * Creates a new Sudoku board that has {@code boxRows * boxCols} rows and
@@ -31,7 +29,7 @@ public class DisplayedSudoku extends Observable implements Cloneable {
      * @param boxRows The number of rows per box.
      * @param boxCols The number of columns per box.
      */
-    public DisplayedSudoku (int boxRows, int boxCols) {
+    public DisplayedSudoku(int boxRows, int boxCols) {
         if (boxRows < 1 || boxCols < 1) {
             throw new IllegalArgumentException("There must be at least one row "
                     + "and one column per Box of the Sudoku!");
@@ -51,57 +49,17 @@ public class DisplayedSudoku extends Observable implements Cloneable {
     }
 
     /**
-     * Creates a deep copy of {@code original}
-     *
-     * @param original The DisplayedSudoku to be cloned.
+     * {@inheritDoc}
      */
-    private DisplayedSudoku (DisplayedSudoku original) {
-        assert original != null;
-        this.boxRows = original.boxRows;
-        this.boxCols = original.boxCols;
-        this.cellsPerStructure = original.cellsPerStructure;
-        this.board = new int[cellsPerStructure][cellsPerStructure];
-        for (int i = 0; i < cellsPerStructure; i++) {
-            this.board[i] = Arrays.copyOf(original.board[i], cellsPerStructure);
-        }
-        this.changeable = new boolean[cellsPerStructure][cellsPerStructure];
-        for (int i = 0; i < cellsPerStructure; i++) {
-            this.changeable[i] = Arrays.copyOf(original.changeable[i],
-                    cellsPerStructure);
-        }
-    }
-
-    /**
-     * Returns the number of cells per structure of this Sudoku.
-     *
-     * @return the number of cells per structure of this Sudoku.
-     */
-    public int getNumbers () {
+    @Override
+    public int getNumbers() {
         return cellsPerStructure;
     }
 
     /**
-     * Returns a two-dimensional Array containing the number that is set in the
-     * cell of this position or {@link #UNSET_CELL} if the cell is not set.
-     *
-     * @return The content of the Sudoku cells.
+     * {@inheritDoc}
      */
-    public int[][] getBoard () {
-        int [][] boardClone = new int[cellsPerStructure][cellsPerStructure];
-        for (int i = 0; i < board.length; i++) {
-            boardClone[i] = Arrays.copyOf(board[i], board[i].length);
-        }
-        return boardClone;
-    }
-
-    /**
-     * Returns whether the cell specified by {@code row} and {@code col} is
-     * changeable or not.
-     *
-     * @param row The row of the cell.
-     * @param col The column of the cell.
-     * @return whether the cell may be changed or not.
-     */
+    @Override
     public boolean isChangeable(int row, int col) {
         if (row < 0 || col < 0 || row >= cellsPerStructure
                 || col >= cellsPerStructure) {
@@ -112,15 +70,10 @@ public class DisplayedSudoku extends Observable implements Cloneable {
     }
 
     /**
-     * Sets the cell specified by its coordinates to the given value. Specifies
-     * if the cell is going to be changeable or not.
-     *
-     * @param row The row of the cell.
-     * @param col The column of the cell.
-     * @param number The number to be set into the cell.
-     * @param isChangeable Specifies whether the cell will be changeable or not.
+     * {@inheritDoc}
      */
-    public void setCell (int row, int col, int number, boolean isChangeable) {
+    @Override
+    public void setCell(int row, int col, int number, boolean isChangeable) {
         if (row < 0 || col < 0 || row >= cellsPerStructure
                 || col >= cellsPerStructure || number < 1
                 || number > cellsPerStructure) {
@@ -135,16 +88,14 @@ public class DisplayedSudoku extends Observable implements Cloneable {
         board[row][col] = number;
         changeable[row][col] = isChangeable;
         setChanged();
-        notifyObservers(getBoard());
+        notifyObservers(board);
     }
 
     /**
-     * Unsets the specified cell.
-     *
-     * @param row The row of the cell.
-     * @param col The column of the cell.
+     * {@inheritDoc}
      */
-    public void unsetCell (int row, int col) {
+    @Override
+    public void unsetCell(int row, int col) {
         if (row < 0 || col < 0 || row >= cellsPerStructure
                 || col >= cellsPerStructure) {
             throw new IllegalArgumentException("Error! Tried to unset a cell "
@@ -157,17 +108,14 @@ public class DisplayedSudoku extends Observable implements Cloneable {
         }
         board[row][col] = DisplayedSudoku.UNSET_CELL;
         setChanged();
-        notifyObservers(getBoard());
+        notifyObservers(board);
     }
 
     /**
-     * Converts this into a Board and returns the result or throws an exception
-     * if the current Sudoku is invalid.
-     *
-     * @return a Board containing the values saved by {@code this}
-     * @throws InvalidSudokuException If the Sudoku represented is invalid.
+     * {@inheritDoc}
      */
-    public Board getSudoku () throws InvalidSudokuException {
+    @Override
+    public Board getSudoku() throws InvalidSudokuException {
         Board sudoku = new SudokuBoard(boxRows, boxCols);
         for (int i = 0; i < cellsPerStructure; i++) {
             for (int j = 0; j < cellsPerStructure; j++) {
@@ -180,15 +128,9 @@ public class DisplayedSudoku extends Observable implements Cloneable {
     }
 
     /**
-     * Returns a deep copy of {@code this}.
-     *
-     * @return a deep copy of {@code this}.
+     * {@inheritDoc}
      */
     @Override
-    public DisplayedSudoku clone () {
-        return new DisplayedSudoku(this);
-    }
-
     public String getContent(int row, int col) {
         return board[row][col] == DisplayedSudoku.UNSET_CELL ? ""
                 : Integer.toString(board[row][col]);
