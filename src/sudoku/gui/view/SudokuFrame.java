@@ -5,14 +5,17 @@ import sudoku.model.InvalidSudokuException;
 import sudoku.model.UnsolvableSudokuException;
 
 import javax.swing.*;
+import javax.swing.undo.UndoManager;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 
 public class SudokuFrame extends JFrame {
+    private JMenuItem undoMenuEntry;
     private JMenuBar menuBar;
     private SudokuField field;
+    private UndoManager undoManager;
 
     public SudokuFrame () {
         super("Sudoku");
@@ -64,11 +67,13 @@ public class SudokuFrame extends JFrame {
         menu.setMnemonic(KeyEvent.VK_E);
         menu.setToolTipText("Undo the latest actions.");
         entry = new JMenuItem("Undo");
+        entry.setEnabled(false);
         entry.setMnemonic(KeyEvent.VK_U);
         entry.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z,
                 ActionEvent.CTRL_MASK));
         entry.setToolTipText("Undo the latest change.");
-        entry.addActionListener(e -> {});
+        entry.addActionListener(e -> undoManager.undo());
+        undoMenuEntry = entry;
         menu.add(entry);
         menuBar.add(menu);
         menu = new JMenu("Solve");
@@ -116,19 +121,30 @@ public class SudokuFrame extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(true);
         setVisible(true);
+        undoManager = new UndoManager();
     }
 
     public void setCell (int row, int col, int value) {
-        field.setCell(row, col, value);
+        field.setCell(row, col, value, undoManager);
+        updateUndoButton();
     }
 
     public void unsetCell (int row, int col) {
-        field.unsetCell(row, col);
+        field.unsetCell(row, col, undoManager);
+        updateUndoButton();
     }
 
     private void showErrorPopup (String message, String title) {
         JOptionPane.showMessageDialog(this, message, title,
                 JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void updateUndoButton() {
+        if (undoManager.canUndoOrRedo()) {
+            undoMenuEntry.setEnabled(true);
+        } else {
+            undoMenuEntry.setEnabled(false);
+        }
     }
 
     public static void main (String[] args) {
