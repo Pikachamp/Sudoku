@@ -28,7 +28,7 @@ public class SudokuField extends JPanel implements Observer {
         boxes = new SudokuBoxPanel[boxRows * boxCols];
         for (int i = 0; i < boxRows * boxCols; i++) {
             SudokuBoxPanel box = new SudokuBoxPanel(boxRows, boxCols,
-                    i / boxRows * boxRows, i / boxCols * boxCols);
+                    i / boxRows * boxRows, i % boxCols * boxCols);
             this.add(box);
             boxes[i] = box;
         }
