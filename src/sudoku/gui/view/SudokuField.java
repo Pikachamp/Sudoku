@@ -2,11 +2,21 @@ package sudoku.gui.view;
 
 import sudoku.gui.model.DisplayData;
 import sudoku.gui.model.DisplayedSudoku;
-import sudoku.model.*;
+import sudoku.model.Board;
+import sudoku.model.EnforcedCellSaturator;
+import sudoku.model.EnforcedNumberSaturator;
+import sudoku.model.InvalidSudokuException;
+import sudoku.model.Structure;
+import sudoku.model.SudokuBoardSolver;
+import sudoku.model.SudokuSolver;
+import sudoku.model.UnsolvableSudokuException;
 
-import javax.swing.*;
-import javax.swing.undo.*;
-import java.awt.*;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.undo.AbstractUndoableEdit;
+import javax.swing.undo.CannotUndoException;
+import javax.swing.undo.UndoManager;
+import java.awt.GridLayout;
 import java.util.Observable;
 import java.util.Observer;
 

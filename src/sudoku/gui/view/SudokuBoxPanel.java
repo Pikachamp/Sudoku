@@ -1,7 +1,7 @@
 package sudoku.gui.view;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JPanel;
+import java.awt.GridLayout;
 
 public class SudokuBoxPanel extends JPanel {
     private SudokuCellLabel[] cells;
