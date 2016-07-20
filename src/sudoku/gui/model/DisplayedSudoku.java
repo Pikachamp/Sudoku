@@ -115,6 +115,21 @@ public class DisplayedSudoku extends Observable implements DisplayData {
      * {@inheritDoc}
      */
     @Override
+    public boolean isFull() {
+        for (int[] row : board) {
+            for (int cell : row) {
+                if (cell == DisplayedSudoku.UNSET_CELL) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Board getSudoku() throws InvalidSudokuException {
         Board sudoku = new SudokuBoard(boxRows, boxCols);
         for (int i = 0; i < cellsPerStructure; i++) {

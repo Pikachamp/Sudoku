@@ -11,20 +11,36 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class SudokuCellLabel extends JLabel {
+/**
+ * An extended JLabel modified to know its position in a table, remove, set and
+ * show the number its holding and managing a popup-menu giving the user the
+ * opportunity to do so.
+ */
+class SudokuCellLabel extends JLabel {
     private final int row;
     private final int col;
     private SudokuPopupMenu popupMenu;
 
-    public SudokuCellLabel(int row, int col, int maxNumber) {
+    /**
+     * Creates a new SudokuCellLabel with the coordinates {@code (row, col)}
+     * containing a popup menu that can set numbers from 1 to maxNumber and
+     * remove the content of the cell.
+     *
+     * @param row The row of the cell.
+     * @param col The column of the cell.
+     * @param maxNumber The highest number that may be set into the cell.
+     */
+    SudokuCellLabel(int row, int col, int maxNumber) {
         super();
-        setMinimumSize(new Dimension(100, 100));
+        setPreferredSize(new Dimension(26, 26));
         setBorder(BorderFactory.createLoweredBevelBorder());
+        setHorizontalAlignment(JLabel.CENTER);
+        setVerticalAlignment(JLabel.CENTER);
         this.row = row;
         this.col = col;
         popupMenu = new SudokuPopupMenu(maxNumber);
-        this.add(popupMenu);
-        this.addMouseListener(new MouseAdapter() {
+        add(popupMenu);
+        addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.isPopupTrigger() && popupMenu.isEnabled()) {
@@ -41,15 +57,32 @@ public class SudokuCellLabel extends JLabel {
         });
     }
 
-    public int getRow () {
+    /**
+     * Returns the row of the cell.
+     *
+     * @return the row of the cell.
+     */
+    int getRow() {
         return row;
     }
 
-    public int getCol () {
+    /**
+     * Returns the column of the cell.
+     *
+     * @return the column of the cell.
+     */
+    int getCol() {
         return col;
     }
 
-    public void set (String value, boolean changeable) {
+    /**
+     * Sets the text {@code this} displays. It additionally disables the popup
+     * menu and changes the colour to red if the cell should not be changeable.
+     *
+     * @param value The String the cell should display.
+     * @param changeable Determines whether the value may still be changed.
+     */
+    void set(String value, boolean changeable) {
         if (value == null) {
             throw new IllegalArgumentException("Error! Tried to set null into"
                     + "a cell!");
@@ -62,17 +95,27 @@ public class SudokuCellLabel extends JLabel {
     }
 }
 
+/**
+ * A popup menu giving the options to set a cell or to remove the value from a
+ * cell.
+ */
 class SudokuPopupMenu extends JPopupMenu {
 
-    public SudokuPopupMenu(int maxNumber) {
+    /**
+     * Creates a new JPopupMenu that can be used to set or remove the value of
+     * a {@link SudokuCellLabel}.
+     *
+     * @param maxNumber The highest number that may be set by this popup menu.
+     */
+    SudokuPopupMenu(int maxNumber) {
         super();
         for (int i = 1; i < maxNumber; i++) {
             final int finalI = i;
             addJMenuItem(Integer.toString(i), "Sets this cell to " + i + ".",
                     e -> {
                         final SudokuCellLabel cell = (SudokuCellLabel)
-                            ((JPopupMenu) ((Container) e.getSource())
-                                    .getParent()).getInvoker();
+                                ((JPopupMenu) ((Container) e.getSource())
+                                        .getParent()).getInvoker();
                         ((SudokuFrame) cell.getTopLevelAncestor())
                                 .setCell(cell.getRow(), cell.getCol(), finalI);
                     });
@@ -84,15 +127,23 @@ class SudokuPopupMenu extends JPopupMenu {
                                     .getParent()).getInvoker();
                     ((SudokuFrame) cell.getTopLevelAncestor())
                             .unsetCell(cell.getRow(), cell.getCol())
-;                });
+                    ;
+                });
         setEnabled(true);
     }
 
-    private void addJMenuItem (String text, String tooltip,
-                               ActionListener listener) {
+    /**
+     * Creates and adds a JMenuItem with the given functionality.
+     *
+     * @param text The text of the item.
+     * @param tooltip The tooltip text of the item.
+     * @param listener The listener the item should 
+     */
+    private void addJMenuItem(String text, String tooltip,
+                              ActionListener listener) {
         JMenuItem entry = new JMenuItem(text);
         entry.setToolTipText(tooltip);
         entry.addActionListener(listener);
-        this.add(entry);
+        add(entry);
     }
 }

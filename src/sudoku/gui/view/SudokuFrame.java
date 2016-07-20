@@ -12,7 +12,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.undo.UndoManager;
-import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
@@ -20,20 +20,19 @@ import java.text.ParseException;
 
 public class SudokuFrame extends JFrame {
     private JMenuItem undoMenuEntry;
-    private JMenuBar menuBar;
     private SudokuField field;
     private UndoManager undoManager;
 
     public SudokuFrame () {
         super("Sudoku");
-        menuBar = new JMenuBar();
+        JMenuBar menuBar = new JMenuBar();
         JMenu menu = new JMenu("File");
         menu.setMnemonic(KeyEvent.VK_F);
         menu.setToolTipText("Open a file or stop the program.");
         JMenuItem entry = new JMenuItem("Open");
         entry.setMnemonic(KeyEvent.VK_O);
         entry.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,
-                ActionEvent.CTRL_MASK));
+                InputEvent.CTRL_MASK));
         entry.setToolTipText("Opens a Sudoku from a file.");
         entry.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
@@ -65,7 +64,7 @@ public class SudokuFrame extends JFrame {
         entry = new JMenuItem("Exit");
         entry.setMnemonic(KeyEvent.VK_X);
         entry.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X,
-                ActionEvent.CTRL_MASK));
+                InputEvent.CTRL_MASK));
         entry.setToolTipText("Ends the program and closes the window.");
         entry.addActionListener(e -> this.dispose());
         menu.add(entry);
@@ -77,7 +76,7 @@ public class SudokuFrame extends JFrame {
         entry.setEnabled(false);
         entry.setMnemonic(KeyEvent.VK_U);
         entry.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z,
-                ActionEvent.CTRL_MASK));
+                InputEvent.CTRL_MASK));
         entry.setToolTipText("Undo the latest change.");
         entry.addActionListener(e -> {
             undoManager.undo();
@@ -92,7 +91,7 @@ public class SudokuFrame extends JFrame {
         entry = new JMenuItem("Suggest Value");
         entry.setMnemonic(KeyEvent.VK_V);
         entry.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V,
-                ActionEvent.CTRL_MASK));
+                InputEvent.CTRL_MASK));
         entry.setToolTipText("Fill a cell with a value retrieved from a"
                 + "possible solution.");
         entry.addActionListener(e -> {
@@ -111,7 +110,7 @@ public class SudokuFrame extends JFrame {
         entry = new JMenuItem("Solve");
         entry.setMnemonic(KeyEvent.VK_S);
         entry.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A,
-                ActionEvent.CTRL_MASK));
+                InputEvent.CTRL_MASK));
         entry.setToolTipText("Solve the Sudoku.");
         entry.addActionListener(e -> {
             try {
@@ -137,7 +136,7 @@ public class SudokuFrame extends JFrame {
     }
 
     public void setCell (int row, int col, int value) {
-        field.setCell(row, col, value, undoManager, true);
+        field.setCell(row, col, value, undoManager);
         updateUndoButton();
     }
 

@@ -3,11 +3,7 @@ package sudoku.gui;
 import sudoku.gui.model.DisplayedSudoku;
 import sudoku.gui.view.SudokuField;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.text.ParseException;
 import java.util.Scanner;
 
@@ -17,13 +13,8 @@ import java.util.Scanner;
 public final class SudokuFieldFactory {
 
     /**
-     * Combines a text line of the file with its line number.
+     * The String used to separate the numbers within the file.
      */
-    private static class Line {
-        private String text;
-        private int number;
-    }
-
     private static final String DELIMITER = " ";
 
     /**
@@ -209,5 +200,13 @@ public final class SudokuFieldFactory {
             throws ParseException {
         throw new ParseException(
                 "Malformed file at line: " + lineNumber + "!", lineNumber);
+    }
+
+    /**
+     * Combines a text line of the file with its line number.
+     */
+    private static class Line {
+        private String text;
+        private int number;
     }
 }

@@ -52,6 +52,13 @@ public interface DisplayData {
     void unsetCell(int row, int col);
 
     /**
+     * Returns {@code true} if every cell is set and {@code false} if not.
+     *
+     * @return whether every cell is set or not.
+     */
+    boolean isFull();
+
+    /**
      * Converts this into a Board and returns the result or throws an exception
      * if the current Sudoku is invalid.
      *

@@ -13,11 +13,10 @@ import sudoku.model.UnsolvableSudokuException;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.border.LineBorder;
 import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
-import java.awt.*;
+import java.awt.GridLayout;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -50,9 +49,8 @@ public class SudokuField extends JPanel implements Observer {
         this.setVisible(true);
     }
 
-    public synchronized void setCell (int row, int col, int value,
-                                      UndoManager undoManager,
-                                      boolean changedByUser) {
+    void setCell (int row, int col, int value,
+                                      UndoManager undoManager) {
         if (row < 0 || col < 0 || value < 1 || sudoku == null
                 || row >= sudoku.getNumbers() || col >= sudoku.getNumbers()
                 || value > sudoku.getNumbers()) {
@@ -62,20 +60,27 @@ public class SudokuField extends JPanel implements Observer {
         }
         undoManager.addEdit(new UndoableCellChange(sudoku, row, col));
         sudoku.setCell(row, col, value, true);
-        if (changedByUser) {
+        if (sudoku.isFull()) {
             try {
                 Board board = sudoku.getSudoku();
                 if (board.isSolution()) {
                     JOptionPane.showMessageDialog(getParent(),
                             "You have solved the Sudoku!", "Congratulations",
                             JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(getParent(),
+                            "This is no valid solution!", "Attention",
+                            JOptionPane.INFORMATION_MESSAGE);
                 }
             } catch (InvalidSudokuException e) {
+                JOptionPane.showMessageDialog(getParent(),
+                        "This is no valid solution!", "Attention",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }
 
-    public synchronized void unsetCell (int row, int col,
+    void unsetCell (int row, int col,
                                         UndoManager undoManager) {
         if (row < 0 || col < 0 || sudoku == null || row >= sudoku.getNumbers()
                 || col >= sudoku.getNumbers()) {
@@ -87,7 +92,7 @@ public class SudokuField extends JPanel implements Observer {
         sudoku.unsetCell(row, col);
     }
 
-    public void suggestValue(UndoManager undoManager)
+    void suggestValue(UndoManager undoManager)
             throws InvalidSudokuException, UnsolvableSudokuException {
         Board board = sudoku.getSudoku();
         SudokuSolver solver = new SudokuBoardSolver();
@@ -98,10 +103,10 @@ public class SudokuField extends JPanel implements Observer {
         int lastSetValue = board.getCell(Structure.ROW, lastSetCoordinates[0],
                 lastSetCoordinates[1]);
         setCell(lastSetCoordinates[0], lastSetCoordinates[1],
-                lastSetValue, undoManager, false);
+                lastSetValue, undoManager);
     }
 
-    public void solveSudoku(UndoManager undoManager)
+    void solveSudoku(UndoManager undoManager)
             throws InvalidSudokuException, UnsolvableSudokuException {
         Board board = sudoku.getSudoku();
         SudokuSolver solver = new SudokuBoardSolver();
@@ -112,7 +117,7 @@ public class SudokuField extends JPanel implements Observer {
             for (int j = 0; j < board.getNumbers(); j++) {
                 if (sudoku.isChangeable(i, j)) {
                     setCell(i, j, board.getCell(Structure.ROW, i, j),
-                            undoManager, false);
+                            undoManager);
                 }
             }
         }
@@ -146,7 +151,7 @@ class UndoableCellChange extends AbstractUndoableEdit {
     private int column;
     private DisplayData sudoku;
 
-    public UndoableCellChange (DisplayData sudoku, int row, int column) {
+    UndoableCellChange (DisplayData sudoku, int row, int column) {
         super();
         this.sudoku = sudoku;
         this.row = row;
@@ -159,6 +164,9 @@ class UndoableCellChange extends AbstractUndoableEdit {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void undo() throws CannotUndoException {
         if (oldValue == DisplayedSudoku.UNSET_CELL) {
