@@ -13,10 +13,11 @@ import sudoku.model.UnsolvableSudokuException;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.border.LineBorder;
 import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.util.Observable;
 import java.util.Observer;
 

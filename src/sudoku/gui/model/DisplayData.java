@@ -3,6 +3,10 @@ package sudoku.gui.model;
 import sudoku.model.Board;
 import sudoku.model.InvalidSudokuException;
 
+/**
+ * This interface specifies the needed functionality to get and manipulate the
+ * data a user interface for a Sudoku uses and shows
+ */
 public interface DisplayData {
 
     /**

@@ -1,6 +1,8 @@
 package sudoku.gui.view;
 
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import java.awt.Color;
 import java.awt.GridLayout;
 
 public class SudokuBoxPanel extends JPanel {
@@ -16,12 +18,13 @@ public class SudokuBoxPanel extends JPanel {
             for (int j = 0; j < cols; j++) {
                 SudokuCellLabel label = new SudokuCellLabel(firstRow + i,
                         firstCol + j, rows * cols);
-                this.add(label);
+                add(label);
                 cells[i * cols + j] = label;
             }
         }
-        this.setLayout(new GridLayout(rows, cols));
-        this.setVisible(true);
+        setLayout(new GridLayout(rows, cols));
+        setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        setVisible(true);
     }
 
     public void setLabel (int position, String value, boolean changeable) {

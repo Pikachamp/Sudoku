@@ -1,5 +1,6 @@
 package sudoku.gui.view;
 
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -17,7 +18,8 @@ public class SudokuCellLabel extends JLabel {
 
     public SudokuCellLabel(int row, int col, int maxNumber) {
         super();
-        setMinimumSize(new Dimension(40, 40));
+        setMinimumSize(new Dimension(100, 100));
+        setBorder(BorderFactory.createLoweredBevelBorder());
         this.row = row;
         this.col = col;
         popupMenu = new SudokuPopupMenu(maxNumber);
@@ -25,14 +27,14 @@ public class SudokuCellLabel extends JLabel {
         this.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (e.isPopupTrigger()) {
+                if (e.isPopupTrigger() && popupMenu.isEnabled()) {
                     popupMenu.show(e.getComponent(), e.getX(), e.getY());
                 }
             }
 
             @Override
             public void mousePressed(MouseEvent e) {
-                if (e.isPopupTrigger()) {
+                if (e.isPopupTrigger() && popupMenu.isEnabled()) {
                     popupMenu.show(e.getComponent(), e.getX(), e.getY());
                 }
             }
@@ -61,11 +63,9 @@ public class SudokuCellLabel extends JLabel {
 }
 
 class SudokuPopupMenu extends JPopupMenu {
-    //private SudokuCellLabel cell;
 
-    public SudokuPopupMenu(int maxNumber/*, SudokuCellLabel cell*/) {
+    public SudokuPopupMenu(int maxNumber) {
         super();
-        //this.cell = cell;
         for (int i = 1; i < maxNumber; i++) {
             final int finalI = i;
             addJMenuItem(Integer.toString(i), "Sets this cell to " + i + ".",
@@ -85,7 +85,7 @@ class SudokuPopupMenu extends JPopupMenu {
                     ((SudokuFrame) cell.getTopLevelAncestor())
                             .unsetCell(cell.getRow(), cell.getCol())
 ;                });
-        this.setEnabled(true);
+        setEnabled(true);
     }
 
     private void addJMenuItem (String text, String tooltip,

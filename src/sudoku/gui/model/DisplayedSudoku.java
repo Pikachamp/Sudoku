@@ -12,6 +12,7 @@ import java.util.Observable;
  * {@link sudoku.model.Board} and solve it.
  */
 public class DisplayedSudoku extends Observable implements DisplayData {
+
     /**
      * {@inheritDoc}
      */
@@ -34,12 +35,11 @@ public class DisplayedSudoku extends Observable implements DisplayData {
             throw new IllegalArgumentException("There must be at least one row "
                     + "and one column per Box of the Sudoku!");
         }
-        int cellsPerStructure = boxRows * boxCols;
         this.boxRows = boxRows;
         this.boxCols = boxCols;
-        this.cellsPerStructure = boxRows * boxCols;
-        this.board = new int[cellsPerStructure][cellsPerStructure];
-        this.changeable = new boolean[cellsPerStructure][cellsPerStructure];
+        cellsPerStructure = boxRows * boxCols;
+        board = new int[cellsPerStructure][cellsPerStructure];
+        changeable = new boolean[cellsPerStructure][cellsPerStructure];
         for (int i = 0; i < cellsPerStructure; i++) {
             for (int j = 0; j < cellsPerStructure; j++) {
                 board[i][j] = DisplayedSudoku.UNSET_CELL;
