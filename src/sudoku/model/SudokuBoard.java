@@ -16,11 +16,6 @@ public class SudokuBoard implements Board {
     private int[] lastCellSet = null;
 
     /**
-     * Constant to indicate, that the content of a cell is not yet set.
-     */
-    public static final int UNSET_CELL = Board.UNSET_CELL;
-
-    /**
      * Creates a new SudokuBoard that contains {@code boxRows} rows and {@code
      * boxCols} columns resulting in {@code boxRows * boxCols} cells per row and
      * per column.
@@ -31,13 +26,13 @@ public class SudokuBoard implements Board {
     public SudokuBoard(int boxRows, int boxCols) {
         this.boxRows = boxRows;
         this.boxCols = boxCols;
-        this.numberOfFieldsPerStructure = boxRows * boxCols;
-        this.board = new IntelligentSudokuCell[this.numberOfFieldsPerStructure]
-                [this.numberOfFieldsPerStructure];
-        for (int i = 0; i < this.numberOfFieldsPerStructure; i++) {
-            for (int j = 0; j < this.numberOfFieldsPerStructure; j++) {
+        numberOfFieldsPerStructure = boxRows * boxCols;
+        board = new IntelligentSudokuCell[numberOfFieldsPerStructure]
+                [numberOfFieldsPerStructure];
+        for (int i = 0; i < numberOfFieldsPerStructure; i++) {
+            for (int j = 0; j < numberOfFieldsPerStructure; j++) {
                 board[i][j] = new IntelligentSudokuCell(SudokuBoard.UNSET_CELL,
-                        this.numberOfFieldsPerStructure, i, j);
+                        numberOfFieldsPerStructure, i, j);
             }
         }
     }
@@ -47,7 +42,7 @@ public class SudokuBoard implements Board {
      */
     @Override
     public int getBoxRows() {
-        return this.boxRows;
+        return boxRows;
     }
 
     /**
@@ -55,7 +50,7 @@ public class SudokuBoard implements Board {
      */
     @Override
     public int getBoxColumns() {
-        return this.boxCols;
+        return boxCols;
     }
 
     /**
@@ -63,7 +58,7 @@ public class SudokuBoard implements Board {
      */
     @Override
     public int getNumbers() {
-        return this.numberOfFieldsPerStructure;
+        return numberOfFieldsPerStructure;
     }
 
     /**
@@ -203,13 +198,7 @@ public class SudokuBoard implements Board {
      */
     @Override
     public String toString() {
-        StringJoiner boardAsString = new StringJoiner(" ");
-        for (IntelligentSudokuCell[] row : this.board) {
-            for (IntelligentSudokuCell cell : row) {
-                boardAsString.add(cell.prettyPrint());
-            }
-        }
-        return boardAsString.toString();
+        return getStringRepresentation(" ");
     }
 
     /**
@@ -236,16 +225,7 @@ public class SudokuBoard implements Board {
      */
     @Override
     public String prettyPrint() {
-        StringBuilder boardAsString = new StringBuilder();
-        for (IntelligentSudokuCell[] row : this.board) {
-            for (IntelligentSudokuCell cell : row) {
-                boardAsString.append(cell.prettyPrint());
-                boardAsString.append(" ");
-            }
-            boardAsString.setLength(boardAsString.length() - 1);
-            boardAsString.append("\n");
-        }
-        return boardAsString.substring(0, boardAsString.length() - 1);
+        return getStringRepresentation("\n");
     }
 
     /**
@@ -308,6 +288,23 @@ public class SudokuBoard implements Board {
             default:
                 throw new Error("Reached a value that is not within the enum!");
         }
+    }
+
+    private String getStringRepresentation(String delimiter) {
+        if (delimiter == null) {
+            throw new IllegalArgumentException("Error! Null is no valid "
+                    + "delimiter to separate rows!");
+        }
+        StringJoiner boardAsString = new StringJoiner(delimiter);
+        StringJoiner rowAsString = new StringJoiner(" ");
+        for (IntelligentSudokuCell[] row : board) {
+            for (IntelligentSudokuCell cell : row) {
+                rowAsString.add(cell.prettyPrint());
+            }
+            boardAsString.add(rowAsString.toString());
+            rowAsString = new StringJoiner(" ");
+        }
+        return boardAsString.toString();
     }
 
     /**

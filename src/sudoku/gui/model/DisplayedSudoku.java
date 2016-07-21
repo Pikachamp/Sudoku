@@ -8,8 +8,8 @@ import sudoku.model.SudokuBoard;
 import java.util.Observable;
 
 /**
- * The data that is displayed by the GUI with the option to convert it into a
- * {@link sudoku.model.Board} and solve it.
+ * The data that is displayed by the GUI with options to change it and to
+ * convert it into a {@link sudoku.model.Board} and solve it.
  */
 public class DisplayedSudoku extends Observable implements DisplayData {
 

@@ -45,10 +45,10 @@ class IntelligentSudokuCell implements Cloneable {
         this.content = content;
         positionInSetIsPossibleContent = new BitSet(maxNumber);
         if (this.content == SudokuBoard.UNSET_CELL) {
-            this.isFixed = false;
+            isFixed = false;
             positionInSetIsPossibleContent.set(0, maxNumber);
         } else {
-            this.isFixed = true;
+            isFixed = true;
         }
         this.positionInRow = positionInRow;
         this.positionInColumn = positionInColumn;
@@ -62,7 +62,7 @@ class IntelligentSudokuCell implements Cloneable {
      * @return the content of the cell.
      */
     int getContent() {
-        return this.content;
+        return content;
     }
 
     /**

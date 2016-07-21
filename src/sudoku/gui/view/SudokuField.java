@@ -22,13 +22,25 @@ import java.util.Observer;
 
 import static java.lang.Integer.parseInt;
 
+/**
+ * A wrapper combining the data of the sudoku with the components to show it,
+ * giving possibilities to change the values of both.
+ */
 public class SudokuField extends JPanel implements Observer {
-    private int boxRows = 0;
-    private int boxCols = 0;
+    private final int boxRows;
+    private final int boxCols;
     private SudokuBoxPanel[] boxes;
-    private final DisplayData sudoku;
+    private DisplayData sudoku;
 
-    public SudokuField (int boxRows, int boxCols, DisplayedSudoku sudoku) {
+    /**
+     * Creates a new JPanel that holds some panels containing the single cells
+     * as well as the data of the sudoku.
+     *
+     * @param boxRows The number of rows each box has.
+     * @param boxCols The number of columns each box has.
+     * @param sudoku The displayed data of the sudoku.
+     */
+    public SudokuField(int boxRows, int boxCols, DisplayedSudoku sudoku) {
         if (boxRows <= 0 || boxCols <= 0) {
             throw new IllegalArgumentException("Error! There must be at least"
                     + "one row and column per box!");
@@ -39,18 +51,26 @@ public class SudokuField extends JPanel implements Observer {
         boxes = new SudokuBoxPanel[boxRows * boxCols];
         for (int i = 0; i < boxRows * boxCols; i++) {
             SudokuBoxPanel box = new SudokuBoxPanel(boxRows, boxCols,
-                    i / boxRows * boxRows, i % boxCols * boxCols);
-            this.add(box);
+                    i / boxRows * boxRows, i % boxRows * boxCols);
+            add(box);
             boxes[i] = box;
         }
         this.sudoku = sudoku;
         sudoku.addObserver(this);
-        this.update(sudoku, null);
-        this.setVisible(true);
+        update(sudoku, null);
+        setVisible(true);
     }
 
-    void setCell (int row, int col, int value,
-                                      UndoManager undoManager) {
+    /**
+     * Sets the cell in the data, makes it undoable and gives feedback to the
+     * user if the sudoku has been filled completely.
+     *
+     * @param row The row of the cell to be set.
+     * @param col The column of the cell to be set.
+     * @param value The value to be set.
+     * @param undoManager The UndoManager managing the edits of the cells.
+     */
+    void setCell(int row, int col, int value, UndoManager undoManager) {
         if (row < 0 || col < 0 || value < 1 || sudoku == null
                 || row >= sudoku.getNumbers() || col >= sudoku.getNumbers()
                 || value > sudoku.getNumbers()) {
@@ -80,8 +100,14 @@ public class SudokuField extends JPanel implements Observer {
         }
     }
 
-    void unsetCell (int row, int col,
-                                        UndoManager undoManager) {
+    /**
+     * Removes the value from the cell of the data and makes that undoable.
+     *
+     * @param row The row of the cell to be unset.
+     * @param col The column of the cell to be unset.
+     * @param undoManager The UndoManager managing the edits of the cells.
+     */
+    void unsetCell(int row, int col, UndoManager undoManager) {
         if (row < 0 || col < 0 || sudoku == null || row >= sudoku.getNumbers()
                 || col >= sudoku.getNumbers()) {
             throw new IllegalArgumentException("Error! Tried to unset a cell "
@@ -92,6 +118,14 @@ public class SudokuField extends JPanel implements Observer {
         sudoku.unsetCell(row, col);
     }
 
+    /**
+     * Tries to solve the sudoku and sets an unset cell to a value of the
+     * solution if successful. Makes this undoable, too.
+     *
+     * @param undoManager The UndoManager managing the edits of the cells.
+     * @throws InvalidSudokuException If the sudoku is not valid.
+     * @throws UnsolvableSudokuException If the sudoku cannot be solved.
+     */
     void suggestValue(UndoManager undoManager)
             throws InvalidSudokuException, UnsolvableSudokuException {
         Board board = sudoku.getSudoku();
@@ -106,6 +140,14 @@ public class SudokuField extends JPanel implements Observer {
                 lastSetValue, undoManager);
     }
 
+    /**
+     * Solves the sudoku completely and sets the data to the found solution if
+     * possible. Makes this undoable, too.
+     *
+     * @param undoManager The UndoManager managing the edits of the cells.
+     * @throws InvalidSudokuException If the sudoku is not valid.
+     * @throws UnsolvableSudokuException If the sudoku cannot be solved.
+     */
     void solveSudoku(UndoManager undoManager)
             throws InvalidSudokuException, UnsolvableSudokuException {
         Board board = sudoku.getSudoku();
@@ -123,6 +165,9 @@ public class SudokuField extends JPanel implements Observer {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void update(Observable o, Object arg) {
         DisplayedSudoku sud = (DisplayedSudoku) o;
@@ -136,22 +181,49 @@ public class SudokuField extends JPanel implements Observer {
         }
     }
 
+    /**
+     * Returns the number of the box containing the cell given by {@code (row,
+     * col)}.
+     *
+     * @param row The row of the cell.
+     * @param col The column of the cell.
+     * @return The number of the box of the cell.
+     */
     private int getBoxNumber(int row, int col) {
         return (row / boxRows) * boxRows + col / boxCols;
     }
 
+    /**
+     * Returns the position of the cell within the box given by {@code (row,
+     * col)}.
+     *
+     * @param row The row of the cell.
+     * @param col The column of the cell.
+     * @return The position of the cell within the box.
+     */
     private int getPositionInBox(int row, int col) {
         return (row % boxRows) * boxCols + col % boxCols;
     }
 }
 
+/**
+ * A class wrapping the change of a cell making it possible to undo it.
+ */
 class UndoableCellChange extends AbstractUndoableEdit {
-    private int oldValue;
-    private int row;
-    private int column;
+    private final int oldValue;
+    private final int row;
+    private final int column;
     private DisplayData sudoku;
 
-    UndoableCellChange (DisplayData sudoku, int row, int column) {
+    /**
+     * Saves the current state of the specified cell in the given sudoku to make
+     * it possible to undo changes made.
+     *
+     * @param sudoku The sudoku containing the cell.
+     * @param row The row of the cell.
+     * @param column The column of the cell.
+     */
+    UndoableCellChange(DisplayData sudoku, int row, int column) {
         super();
         this.sudoku = sudoku;
         this.row = row;

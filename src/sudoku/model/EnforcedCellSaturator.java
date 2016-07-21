@@ -2,7 +2,8 @@ package sudoku.model;
 
 /**
  * A class holding the algorithm to solve a Sudoku by the enforced cell
- * strategy.
+ * strategy. Therefore each cell is checked for its remaining possibilities and
+ * is set if only one is remaining.
  */
 public class EnforcedCellSaturator implements Saturator {
 

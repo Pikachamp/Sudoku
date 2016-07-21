@@ -102,8 +102,8 @@ class SudokuCellLabel extends JLabel {
 class SudokuPopupMenu extends JPopupMenu {
 
     /**
-     * Creates a new JPopupMenu that can be used to set or remove the value of
-     * a {@link SudokuCellLabel}.
+     * Creates a new JPopupMenu that can be used to set or remove the value of a
+     * {@link SudokuCellLabel}.
      *
      * @param maxNumber The highest number that may be set by this popup menu.
      */
@@ -126,8 +126,7 @@ class SudokuPopupMenu extends JPopupMenu {
                             ((JPopupMenu) ((Container) e.getSource())
                                     .getParent()).getInvoker();
                     ((SudokuFrame) cell.getTopLevelAncestor())
-                            .unsetCell(cell.getRow(), cell.getCol())
-                    ;
+                            .unsetCell(cell.getRow(), cell.getCol());
                 });
         setEnabled(true);
     }
@@ -137,7 +136,7 @@ class SudokuPopupMenu extends JPopupMenu {
      *
      * @param text The text of the item.
      * @param tooltip The tooltip text of the item.
-     * @param listener The listener the item should 
+     * @param listener The listener the item should
      */
     private void addJMenuItem(String text, String tooltip,
                               ActionListener listener) {

@@ -3,7 +3,11 @@ package sudoku.gui;
 import sudoku.gui.model.DisplayedSudoku;
 import sudoku.gui.view.SudokuField;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.Scanner;
 

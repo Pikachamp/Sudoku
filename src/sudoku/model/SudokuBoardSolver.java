@@ -39,9 +39,9 @@ public class SudokuBoardSolver implements SudokuSolver {
                     + "given to the Sudoku solver as the board!");
         }
         boolean boardHasChanged = true;
+        Board clone = board.clone();
         while (boardHasChanged) {
             boardHasChanged = false;
-            Board clone = board.clone();
             try {
                 for (Saturator strategy : solutionStrategies) {
                     boardHasChanged |= strategy.saturate(clone);
@@ -124,11 +124,12 @@ public class SudokuBoardSolver implements SudokuSolver {
                 getCellWithLeastPossibilities(currentBoard);
         int row = cellWithLeastPossibilities[0];
         int col = cellWithLeastPossibilities[1];
-        for (int possibleContent : currentBoard.getPossibilities(Structure.ROW,
-                row, col)) {
+        int[] possibleContent = currentBoard.getPossibilities(Structure.ROW,
+                row, col);
+        for (int i = possibleContent.length - 1; i >= 0; i--) {
             Board newBoard = currentBoard.clone();
             try {
-                newBoard.setCell(Structure.ROW, row, col, possibleContent);
+                newBoard.setCell(Structure.ROW, row, col, i);
             } catch (InvalidSudokuException e) {
                 continue;
             }

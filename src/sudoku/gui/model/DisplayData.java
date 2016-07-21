@@ -5,7 +5,8 @@ import sudoku.model.InvalidSudokuException;
 
 /**
  * This interface specifies the needed functionality to get and manipulate the
- * data a user interface for a Sudoku uses and shows
+ * data a user interface for a Sudoku uses and shows with the option to convert
+ * it into a {@link sudoku.model.Board}.
  */
 public interface DisplayData {
 

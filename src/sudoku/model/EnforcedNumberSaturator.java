@@ -2,7 +2,8 @@ package sudoku.model;
 
 /**
  * A class holding the algorithm to solve a Sudoku by the enforced cell
- * strategy.
+ * strategy. Therefore for every number it is checked for every structure
+ * if it can only be set into one cell. If so the number is set into this cell.
  */
 public class EnforcedNumberSaturator implements Saturator {
 
@@ -19,7 +20,8 @@ public class EnforcedNumberSaturator implements Saturator {
         int numberOfCellsPerStructure = board.getNumbers();
         int[] lastOccurrence = new int[board.getNumbers()];
 
-        /* The position in this is indexing a counter that gives the number of
+        /*
+         * The position in this is indexing a counter that gives the number of
          * times position + 1 may be inserted into the cells of the structure.
          */
         int[] possibleContentCounters = null;

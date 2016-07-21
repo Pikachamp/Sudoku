@@ -6,13 +6,22 @@ import java.awt.Color;
 import java.awt.GridLayout;
 
 /**
- * A box of a sudoku containing its cells making it easier to structure the
- * sudoku. It can change the value of its cells.
+ * A JPanel representing a box of a sudoku containing its cells making it easier
+ * to structure the sudoku. It can change the value of its cells.
  */
 class SudokuBoxPanel extends JPanel {
     private SudokuCellLabel[] cells;
 
-    SudokuBoxPanel (int rows, int cols, int firstRow, int firstCol) {
+    /**
+     * Creates a JPanel representing a box of a sudoku, having the cells already
+     * pinned to it.
+     *
+     * @param rows The number of rows this box has.
+     * @param cols The number of columns this box has.
+     * @param firstRow The row of the first cell of this box.
+     * @param firstCol The column of the first cell of this box.
+     */
+    SudokuBoxPanel(int rows, int cols, int firstRow, int firstCol) {
         if (rows <= 0 || cols <= 0) {
             throw new IllegalArgumentException("Error! There must be at least"
                     + "one row and column per box!");
@@ -31,7 +40,15 @@ class SudokuBoxPanel extends JPanel {
         setVisible(true);
     }
 
-    void setLabel (int position, String value, boolean changeable) {
+    /**
+     * Sets the value of the specified cell of this box and makes it
+     * unchangeable if necessary.
+     *
+     * @param position The number of the cell within this box.
+     * @param value The value to be shown by the cell label.
+     * @param changeable Specifies whether the value may be changed later on.
+     */
+    void setLabel(int position, String value, boolean changeable) {
         if (cells == null || position < 0 || position >= cells.length) {
             throw new IllegalArgumentException("Error! The label tried to set "
             + "does not exist!");
