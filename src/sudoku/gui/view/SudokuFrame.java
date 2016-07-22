@@ -23,7 +23,7 @@ import java.text.ParseException;
  * A JFrame holding a sudoku that can be manipulated via various functions like
  * being loaded from a file, undoing edits and setting and unsetting cells.
  */
-public class SudokuFrame extends JFrame {
+public final class SudokuFrame extends JFrame {
     private JMenuItem undoMenuEntry;
     private SudokuField field;
     private UndoManager undoManager;

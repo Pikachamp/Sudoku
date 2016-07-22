@@ -9,7 +9,7 @@ import java.awt.GridLayout;
  * A JPanel representing a box of a sudoku containing its cells making it easier
  * to structure the sudoku. It can change the value of its cells.
  */
-class SudokuBoxPanel extends JPanel {
+final class SudokuBoxPanel extends JPanel {
     private SudokuCellLabel[] cells;
 
     /**

@@ -16,7 +16,7 @@ import java.awt.event.MouseEvent;
  * show the number its holding and managing a popup-menu giving the user the
  * opportunity to do so.
  */
-class SudokuCellLabel extends JLabel {
+final class SudokuCellLabel extends JLabel {
     private final int row;
     private final int col;
     private SudokuPopupMenu popupMenu;
@@ -104,7 +104,7 @@ class SudokuCellLabel extends JLabel {
  * A popup menu giving the options to set a cell or to remove the value from a
  * cell.
  */
-class SudokuPopupMenu extends JPopupMenu {
+final class SudokuPopupMenu extends JPopupMenu {
 
     /**
      * Creates a new JPopupMenu that can be used to set or remove the value of a

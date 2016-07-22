@@ -26,7 +26,7 @@ import static java.lang.Integer.parseInt;
  * A wrapper combining the data of the sudoku with the components to show it,
  * giving possibilities to change the values of both.
  */
-public class SudokuField extends JPanel implements Observer {
+public final class SudokuField extends JPanel implements Observer {
     private final int boxRows;
     private final int boxCols;
     private SudokuBoxPanel[] boxes;
