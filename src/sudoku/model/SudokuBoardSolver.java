@@ -131,7 +131,7 @@ public class SudokuBoardSolver implements SudokuSolver {
         for (int i = possibleContent.length - 1; i >= 0; i--) {
             Board newBoard = currentBoard.clone();
             try {
-                newBoard.setCell(Structure.ROW, row, col, i);
+                newBoard.setCell(Structure.ROW, row, col, possibleContent[i]);
             } catch (InvalidSudokuException e) {
                 continue;
             }
