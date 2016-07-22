@@ -24,7 +24,7 @@ public class EnforcedNumberSaturator implements Saturator {
          * The position in this is indexing a counter that gives the number of
          * times position + 1 may be inserted into the cells of the structure.
          */
-        int[] possibleContentCounters = null;
+        int[] possibleContentCounters;
         for (Structure structure : Structure.values()) {
             for (int i = 0; i < numberOfCellsPerStructure; i++) {
                 possibleContentCounters =
@@ -62,7 +62,8 @@ public class EnforcedNumberSaturator implements Saturator {
      */
     private int[] getPossibilityCounters(Structure struct, int major,
                                         Board board, int[] lastOccurence) {
-        assert board != null && major >= 0 && major < board.getNumbers();
+        assert board != null && major >= 0 && major < board.getNumbers()
+                && lastOccurence != null;
         int[] counters = new int[board.getNumbers()];
         for (int i = 0; i < board.getNumbers(); i++) {
             int[] possibilities = board.getPossibilities(struct, major, i);

@@ -32,6 +32,11 @@ class SudokuCellLabel extends JLabel {
      */
     SudokuCellLabel(int row, int col, int maxNumber) {
         super();
+        if (row < 0 || col < 0 || maxNumber < row || maxNumber < col) {
+            throw new IllegalArgumentException("Error! The cell may not have a "
+                    + "negative row or column and the highest number to be set "
+                    + "may not be lower than the row and the column!");
+        }
         setPreferredSize(new Dimension(26, 26));
         setBorder(BorderFactory.createLoweredBevelBorder());
         setHorizontalAlignment(JLabel.CENTER);
@@ -109,6 +114,10 @@ class SudokuPopupMenu extends JPopupMenu {
      */
     SudokuPopupMenu(int maxNumber) {
         super();
+        if (maxNumber <= 0) {
+            throw new IllegalArgumentException("Error! The popup menu must at "
+                    + "least have a max number of 1!");
+        }
         for (int i = 1; i < maxNumber; i++) {
             final int finalI = i;
             addJMenuItem(Integer.toString(i), "Sets this cell to " + i + ".",
@@ -140,6 +149,7 @@ class SudokuPopupMenu extends JPopupMenu {
      */
     private void addJMenuItem(String text, String tooltip,
                               ActionListener listener) {
+        assert text != null && tooltip != null && listener != null;
         JMenuItem entry = new JMenuItem(text);
         entry.setToolTipText(tooltip);
         entry.addActionListener(listener);

@@ -2,6 +2,7 @@ package sudoku.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 
@@ -9,12 +10,13 @@ import java.util.Stack;
  * A class to administrate solution strategies and apply them to Sudokus.
  */
 public class SudokuBoardSolver implements SudokuSolver {
-    private List<Saturator> solutionStrategies = new ArrayList<>();
+    private List<Saturator> solutionStrategies;
 
     /**
      * Creates a new SudokuBoardSolver with no solution strategy.
      */
     public SudokuBoardSolver() {
+        solutionStrategies = new LinkedList<>();
     }
 
     /**

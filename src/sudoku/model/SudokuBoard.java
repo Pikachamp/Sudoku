@@ -24,6 +24,10 @@ public class SudokuBoard implements Board {
      * @param boxCols The number of columns of the board.
      */
     public SudokuBoard(int boxRows, int boxCols) {
+        if (boxRows <= 0 || boxCols <= 0) {
+            throw new IllegalArgumentException("Error! There must be at least "
+                    + "one row and one column per box!");
+        }
         this.boxRows = boxRows;
         this.boxCols = boxCols;
         numberOfFieldsPerStructure = boxRows * boxCols;
@@ -206,6 +210,10 @@ public class SudokuBoard implements Board {
      */
     @Override
     public int compareTo(Board other) {
+        if (other == null || this.getNumbers() != other.getNumbers()) {
+            throw new IllegalArgumentException("Error! The other board has to "
+                    + "have the same size as this!");
+        }
         int comparisonOfLastCells;
         for (int i = 0; i < numberOfFieldsPerStructure; i++) {
             for (int j = 0; j < numberOfFieldsPerStructure; j++) {
@@ -291,10 +299,7 @@ public class SudokuBoard implements Board {
     }
 
     private String getStringRepresentation(String delimiter) {
-        if (delimiter == null) {
-            throw new IllegalArgumentException("Error! Null is no valid "
-                    + "delimiter to separate rows!");
-        }
+        assert delimiter != null;
         StringJoiner boardAsString = new StringJoiner(delimiter);
         StringJoiner rowAsString = new StringJoiner(" ");
         for (IntelligentSudokuCell[] row : board) {

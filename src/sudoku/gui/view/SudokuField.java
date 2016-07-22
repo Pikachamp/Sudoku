@@ -41,9 +41,12 @@ public class SudokuField extends JPanel implements Observer {
      * @param sudoku The displayed data of the sudoku.
      */
     public SudokuField(int boxRows, int boxCols, DisplayedSudoku sudoku) {
-        if (boxRows <= 0 || boxCols <= 0) {
+        if (boxRows <= 0 || boxCols <= 0 || sudoku == null
+                || boxRows * boxCols != sudoku.getNumbers()) {
             throw new IllegalArgumentException("Error! There must be at least"
-                    + "one row and column per box!");
+                    + "one row and column per box, the sudoku may not be null "
+                    + "and the cells per structure of the sudoku must match "
+                    + "those of this.");
         }
         this.boxRows = boxRows;
         this.boxCols = boxCols;
@@ -71,12 +74,12 @@ public class SudokuField extends JPanel implements Observer {
      * @param undoManager The UndoManager managing the edits of the cells.
      */
     void setCell(int row, int col, int value, UndoManager undoManager) {
-        if (row < 0 || col < 0 || value < 1 || sudoku == null
-                || row >= sudoku.getNumbers() || col >= sudoku.getNumbers()
-                || value > sudoku.getNumbers()) {
+        if (row < 0 || col < 0 || value < 1 || row >= sudoku.getNumbers()
+                || col >= sudoku.getNumbers() || value > sudoku.getNumbers()
+                || !sudoku.isChangeable(row, col) || undoManager == null) {
             throw new IllegalArgumentException("Error! Tried to set a cell "
-                    + "that is not on the sudoku, a value that may not be set "
-                    + "or a cell of a not yet initialized sudoku!");
+                    + "that is not on the sudoku or may not be set, a value "
+                    + "that may not be set or used null as undoManager!");
         }
         undoManager.addEdit(new UndoableCellChange(sudoku, row, col));
         sudoku.setCell(row, col, value, true);
@@ -108,11 +111,12 @@ public class SudokuField extends JPanel implements Observer {
      * @param undoManager The UndoManager managing the edits of the cells.
      */
     void unsetCell(int row, int col, UndoManager undoManager) {
-        if (row < 0 || col < 0 || sudoku == null || row >= sudoku.getNumbers()
-                || col >= sudoku.getNumbers()) {
+        if (row < 0 || col < 0 || row >= sudoku.getNumbers()
+                || col >= sudoku.getNumbers() || !sudoku.isChangeable(row, col)
+                || undoManager == null) {
             throw new IllegalArgumentException("Error! Tried to unset a cell "
-                    + "that is not on the sudoku or a cell of a not yet "
-                    + "initialized sudoku!");
+                    + "that is not on the sudoku or may not be set or used "
+                    + "null as undoManager!");
         }
         undoManager.addEdit(new UndoableCellChange(sudoku, row, col));
         sudoku.unsetCell(row, col);
@@ -128,6 +132,10 @@ public class SudokuField extends JPanel implements Observer {
      */
     void suggestValue(UndoManager undoManager)
             throws InvalidSudokuException, UnsolvableSudokuException {
+        if (undoManager == null) {
+            throw new IllegalArgumentException("Error! Used null as "
+                    + "undoManager!");
+        }
         Board board = sudoku.getSudoku();
         SudokuSolver solver = new SudokuBoardSolver();
         solver.addSaturator(new EnforcedCellSaturator());
@@ -150,6 +158,10 @@ public class SudokuField extends JPanel implements Observer {
      */
     void solveSudoku(UndoManager undoManager)
             throws InvalidSudokuException, UnsolvableSudokuException {
+        if (undoManager == null) {
+            throw new IllegalArgumentException("Error! Used null as "
+                    + "undoManager!");
+        }
         Board board = sudoku.getSudoku();
         SudokuSolver solver = new SudokuBoardSolver();
         solver.addSaturator(new EnforcedCellSaturator());
@@ -170,6 +182,10 @@ public class SudokuField extends JPanel implements Observer {
      */
     @Override
     public void update(Observable o, Object arg) {
+        if (o == null) {
+            throw new IllegalArgumentException("Error! The observed object may "
+                    + "not be null!");
+        }
         DisplayedSudoku sud = (DisplayedSudoku) o;
         for (int i = 0; i < sud.getNumbers(); i++) {
             for (int j = 0; j < sud.getNumbers(); j++) {
@@ -190,7 +206,9 @@ public class SudokuField extends JPanel implements Observer {
      * @return The number of the box of the cell.
      */
     private int getBoxNumber(int row, int col) {
-        return (row / boxRows) * boxRows + col / boxCols;
+        assert row >= 0 && col >=  0 && row < sudoku.getNumbers()
+                && col < sudoku.getNumbers();
+            return (row / boxRows) * boxRows + col / boxCols;
     }
 
     /**
@@ -202,6 +220,8 @@ public class SudokuField extends JPanel implements Observer {
      * @return The position of the cell within the box.
      */
     private int getPositionInBox(int row, int col) {
+        assert row >= 0 && col >=  0 && row < sudoku.getNumbers()
+                && col < sudoku.getNumbers();
         return (row % boxRows) * boxCols + col % boxCols;
     }
 }
@@ -225,6 +245,11 @@ class UndoableCellChange extends AbstractUndoableEdit {
      */
     UndoableCellChange(DisplayData sudoku, int row, int column) {
         super();
+        if (sudoku == null || row >= sudoku.getNumbers()
+                || column >= sudoku.getNumbers()) {
+            throw new IllegalArgumentException("Error! Null was given a sudoku "
+                    + "or the row and the column of the cell are too high!");
+        }
         this.sudoku = sudoku;
         this.row = row;
         this.column = column;

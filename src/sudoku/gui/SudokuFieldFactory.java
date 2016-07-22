@@ -175,6 +175,7 @@ public final class SudokuFieldFactory {
     private static int[] parseRowsPerBoxAndColumnsPerBox(String arg,
                                                          int lineNumber)
             throws ParseException {
+        assert arg != null && lineNumber >= 0;
         Scanner scanner = new Scanner(arg);
         scanner.useDelimiter(SudokuFieldFactory.DELIMITER);
         int[] result = new int[2];

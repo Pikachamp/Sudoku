@@ -83,7 +83,7 @@ public class DisplayedSudoku extends Observable implements DisplayData {
         }
         if (!changeable[row][col]) {
             throw new IllegalArgumentException("Error! Tried to overwrite the "
-                    + "value of a cell given by the file!");
+                    + "value of a cell that may not be changed!");
         }
         board[row][col] = number;
         changeable[row][col] = isChangeable;
@@ -147,6 +147,11 @@ public class DisplayedSudoku extends Observable implements DisplayData {
      */
     @Override
     public String getContent(int row, int col) {
+        if (row < 0 || col < 0 || row >= cellsPerStructure
+                || col >= cellsPerStructure) {
+            throw new IllegalArgumentException("Error! The cell tried to "
+                    + "access is not on the board!");
+        }
         return board[row][col] == DisplayedSudoku.UNSET_CELL ? ""
                 : Integer.toString(board[row][col]);
     }

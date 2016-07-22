@@ -15,6 +15,7 @@ import javax.swing.undo.UndoManager;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
 
@@ -32,7 +33,7 @@ public class SudokuFrame extends JFrame {
      * the data representing the sudoku as well as the components displaying
      * those.
      */
-    public SudokuFrame() {
+    private SudokuFrame() {
         super("Sudoku");
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(createTheFileMenu());
@@ -54,7 +55,11 @@ public class SudokuFrame extends JFrame {
      * @param col The column of the cell.
      * @param value The value to be set.
      */
-    public void setCell(int row, int col, int value) {
+    void setCell(int row, int col, int value) {
+        if (row < 0 || col < 0) {
+            throw new IllegalArgumentException("Error! Tried to set a cell "
+                    + "that is not on the board!");
+        }
         field.setCell(row, col, value, undoManager);
         updateUndoMenuEntry();
     }
@@ -65,7 +70,11 @@ public class SudokuFrame extends JFrame {
      * @param row The row of the cell.
      * @param col The column of the cell.
      */
-    public void unsetCell(int row, int col) {
+    void unsetCell(int row, int col) {
+        if (row < 0 || col < 0) {
+            throw new IllegalArgumentException("Error! Tried to unset a cell "
+                    + "that is not on the board!");
+        }
         field.unsetCell(row, col, undoManager);
         updateUndoMenuEntry();
     }
@@ -110,6 +119,9 @@ public class SudokuFrame extends JFrame {
                                 + "open the chosen file! Check its status and"
                                 + "your permissions to read it!", "Error!");
                     }
+                } catch (FileNotFoundException f) {
+                    showErrorPopup("Couldn't find the specified file!",
+                            "Error!");
                 } catch (IOException f) {
                     showErrorPopup("An error occured when trying to open "
                             + "and read the file!", "I/O-Error!");
@@ -211,6 +223,7 @@ public class SudokuFrame extends JFrame {
      * @param title The title of the popup dialog.
      */
     private void showErrorPopup(String message, String title) {
+        assert message != null && title != null;
         JOptionPane.showMessageDialog(this, message, title,
                 JOptionPane.ERROR_MESSAGE);
     }

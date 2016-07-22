@@ -22,9 +22,12 @@ class SudokuBoxPanel extends JPanel {
      * @param firstCol The column of the first cell of this box.
      */
     SudokuBoxPanel(int rows, int cols, int firstRow, int firstCol) {
-        if (rows <= 0 || cols <= 0) {
+        if (rows <= 0 || cols <= 0 || firstRow < 0 || firstCol < 0
+                || firstRow > rows * cols - rows
+                || firstCol > rows * cols - cols) {
             throw new IllegalArgumentException("Error! There must be at least"
-                    + "one row and column per box!");
+                    + "one row and column per box and the first row and first "
+                    + "column of the box must be valid!");
         }
         cells = new SudokuCellLabel[rows * cols];
         for (int i = 0; i < rows; i++) {
@@ -49,9 +52,9 @@ class SudokuBoxPanel extends JPanel {
      * @param changeable Specifies whether the value may be changed later on.
      */
     void setLabel(int position, String value, boolean changeable) {
-        if (cells == null || position < 0 || position >= cells.length) {
+        if (position < 0 || position >= cells.length || value == null) {
             throw new IllegalArgumentException("Error! The label tried to set "
-            + "does not exist!");
+            + "does not exist or the value is not null");
         }
         cells[position].set(value, changeable);
     }
