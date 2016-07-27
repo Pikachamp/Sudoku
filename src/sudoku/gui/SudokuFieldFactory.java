@@ -192,6 +192,7 @@ public final class SudokuFieldFactory {
         if (result[0] < 0 || result[1] < 0 || scanner.hasNext()) {
             invalidFileError(lineNumber);
         }
+        scanner.close();
         return result;
     }
 
