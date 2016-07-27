@@ -59,6 +59,13 @@ final class SudokuCellLabel extends JLabel {
                     popupMenu.show(e.getComponent(), e.getX(), e.getY());
                 }
             }
+
+            @Override
+            public void mouseReleased (MouseEvent e) {
+                if (e.isPopupTrigger() && popupMenu.isEnabled()) {
+                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
         });
     }
 
