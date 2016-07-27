@@ -125,7 +125,7 @@ final class SudokuPopupMenu extends JPopupMenu {
             throw new IllegalArgumentException("Error! The popup menu must at "
                     + "least have a max number of 1!");
         }
-        for (int i = 1; i < maxNumber; i++) {
+        for (int i = 1; i <= maxNumber; i++) {
             final int finalI = i;
             addJMenuItem(Integer.toString(i), "Sets this cell to " + i + ".",
                     e -> {
